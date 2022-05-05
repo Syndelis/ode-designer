@@ -1,5 +1,7 @@
 #include "population.h"
-#include <imnodes.h>
+#include <imgui_node_editor.h>
+
+namespace Editor = ax::NodeEditor;
 
 Population::Population() {
 }
@@ -8,20 +10,15 @@ Population::~Population() {
 }
 
 void Population::draw() {
-    ImNodes::BeginNode(1);
-
-    ImNodes::BeginNodeTitleBar();
-    ImGui::TextUnformatted("simple node :)");
-    ImNodes::EndNodeTitleBar();
-
-    ImNodes::BeginInputAttribute(2);
-    ImGui::Text("input");
-    ImNodes::EndInputAttribute();
-
-    ImNodes::BeginOutputAttribute(3);
-    ImGui::Indent(40);
-    ImGui::Text("output");
-    ImNodes::EndOutputAttribute();
-
-    ImNodes::EndNode();
+    int uniqueId = 1;
+    Editor::BeginNode(uniqueId++);
+        ImGui::Text("Node A");
+        Editor::BeginPin(uniqueId++, Editor::PinKind::Input);
+            ImGui::Text("-> In");
+        Editor::EndPin();
+        ImGui::SameLine();
+        Editor::BeginPin(uniqueId++, Editor::PinKind::Output);
+            ImGui::Text("Out ->");
+        Editor::EndPin();
+    Editor::EndNode();
 }

@@ -6,13 +6,15 @@
 #include <string>
 #include <vector>
 #include <imgui.h>
-#include <imnodes.h>
 #include <imgui_impl_glfw.h>
 #include <imgui_impl_opengl3.h>
+#include <imgui_node_editor.h>
 #include "style.h"
 #include <GLFW/glfw3.h>
 #include <GL/gl.h>
 #include "../nodes/population.h"
+
+namespace Editor = ax::NodeEditor;
 
 /* -----------------------------------------------------------------------------
     FUNCTIONS
@@ -20,14 +22,16 @@
 
 auto testnode = new Population();
 
-void draw() {
+void draw(Editor::EditorContext *editorContext) {
 
     ImGui::Begin("simple node editor");
-    ImNodes::BeginNodeEditor();
+    Editor::SetCurrentEditor(editorContext);
+    Editor::Begin("My Editor", ImVec2(0.0, 0.0f));
 
     testnode->draw();
-
-    ImNodes::EndNodeEditor();
+    
+    Editor::End();
+    Editor::SetCurrentEditor(nullptr);
     ImGui::End();
 
 }
@@ -56,10 +60,12 @@ int main() {
     ImGui::CreateContext();
     auto io = ImGui::GetIO();
     setEelStyle(ImGui::GetStyle());
-    ImNodes::CreateContext();
 
     ImGui_ImplGlfw_InitForOpenGL(window, true);
     ImGui_ImplOpenGL3_Init("#version 330");
+
+    // Node Editor Setup -----------------------------------
+    static auto editorContext = Editor::CreateEditor(nullptr);
 
     // Main Loop -------------------------------------------
     while (!glfwWindowShouldClose(window)) {
@@ -70,7 +76,7 @@ int main() {
 
         // Draw Start ---------------------------------------
 
-        draw();
+        draw(editorContext);
 
         // Draw End -----------------------------------------
 
@@ -86,7 +92,6 @@ int main() {
 
     ImGui_ImplOpenGL3_Shutdown();
     ImGui_ImplGlfw_Shutdown();
-    ImNodes::DestroyContext();
     ImGui::DestroyContext();
 
     glfwDestroyWindow(window);
