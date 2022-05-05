@@ -1,0 +1,6 @@
+[submodule "lib/imgui"]
+	path = lib/imgui
+	url = https://github.com/Syndelis/imgui
+[submodule "lib/imnodes"]
+	path = lib/imnodes
+	url = https://github.com/Syndelis/imnodes
