@@ -5,6 +5,7 @@
 #include <iostream>
 #include <string>
 #include <vector>
+#include <map>
 #include <imgui.h>
 #include <imnodes.h>
 #include <imgui_impl_glfw.h>
@@ -19,18 +20,18 @@
     FUNCTIONS
 ----------------------------------------------------------------------------- */
 
-auto testnode = new Population();
-auto testnode2 = new Population();
+auto testnode = new Population("A");
+auto testnode2 = new Population("B");
 auto testnode3 = new Variable("M₀");
 
-void draw() {
+void render(std::map<Pin*, Pin*> &links) {
 
     ImGui::Begin("simple node editor");
     ImNodes::BeginNodeEditor();
 
-    testnode->draw();
-    testnode2->draw();
-    testnode3->draw();
+    testnode->process(links);
+    testnode2->process(links);
+    testnode3->process(links);
 
     ImNodes::EndNodeEditor();
     ImGui::End();
@@ -68,6 +69,11 @@ int main() {
     ImGui_ImplGlfw_InitForOpenGL(window, true);
     ImGui_ImplOpenGL3_Init("#version 330");
 
+    // Application Setup -----------------------------------
+
+    std::vector<Node*> nodes;
+    std::map<Pin*, Pin*> links;
+
     // Main Loop -------------------------------------------
     while (!glfwWindowShouldClose(window)) {
         glClear(GL_COLOR_BUFFER_BIT);
@@ -80,7 +86,7 @@ int main() {
         ImGui::ShowDemoWindow();
         ImGuiID dock_id = ImGui::DockSpaceOverViewport(ImGui::GetMainViewport(), 0);
         ImGui::SetNextWindowDockID(dock_id, true);
-        draw();
+        render(links);
 
         // Draw End -----------------------------------------
 

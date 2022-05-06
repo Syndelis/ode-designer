@@ -11,7 +11,7 @@ public:
     NumericPin(float startVal) : Pin(), value(startVal) {};
     
     virtual ~NumericPin() {};
-    virtual void draw();
+    virtual void renderContent();
 };
 
 #endif

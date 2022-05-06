@@ -8,7 +8,7 @@ public:
     int id;
     Element(): id(nextId++) {}
     virtual ~Element() {}
-    virtual void draw() {}
+    virtual void renderContent() {}
 };
 
 #endif

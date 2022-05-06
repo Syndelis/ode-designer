@@ -1,7 +1,7 @@
 #include "numeric.h"
 #include <imgui.h>
 
-void NumericPin::draw() {
+void NumericPin::renderContent() {
 
     ImGui::PushItemWidth(100);
     ImGui::InputFloat("", &value);
