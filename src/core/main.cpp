@@ -23,8 +23,6 @@ auto testnode2 = new Population();
 
 void draw() {
 
-    ImGui::ShowDemoWindow();
-
     ImGui::Begin("simple node editor");
     ImNodes::BeginNodeEditor();
 
@@ -58,6 +56,7 @@ int main() {
     // ImGui Setup -----------------------------------------
     IMGUI_CHECKVERSION();
     ImGui::CreateContext();
+    ImGui::GetIO().ConfigFlags |= ImGuiConfigFlags_DockingEnable;
     auto io = ImGui::GetIO();
     setEelStyle(ImGui::GetStyle());
     ImNodes::CreateContext();
@@ -74,6 +73,9 @@ int main() {
 
         // Draw Start ---------------------------------------
 
+        ImGui::ShowDemoWindow();
+        ImGuiID dock_id = ImGui::DockSpaceOverViewport(ImGui::GetMainViewport(), 0);
+        ImGui::SetNextWindowDockID(dock_id, true);
         draw();
 
         // Draw End -----------------------------------------
