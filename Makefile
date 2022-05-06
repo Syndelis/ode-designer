@@ -1,4 +1,4 @@
-CC=g++
+CC=g++ -std=c++17
 CFLAGS=-g -Wno-unused-result -ffunction-sections -fdata-sections -ffast-math -Wl,--gc-sections -Wl,--print-gc-sections
 CFLAGS_LIB=-c
 

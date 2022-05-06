@@ -19,13 +19,17 @@
 ----------------------------------------------------------------------------- */
 
 auto testnode = new Population();
+auto testnode2 = new Population();
 
 void draw() {
+
+    ImGui::ShowDemoWindow();
 
     ImGui::Begin("simple node editor");
     ImNodes::BeginNodeEditor();
 
     testnode->draw();
+    testnode2->draw();
 
     ImNodes::EndNodeEditor();
     ImGui::End();

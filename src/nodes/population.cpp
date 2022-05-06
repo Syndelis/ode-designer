@@ -1,27 +1,21 @@
 #include "population.h"
+#include "../pins/numeric.h"
 #include <imnodes.h>
 
-Population::Population() {
+Population::Population() : Node() {
+    outputs.push_back(new NumericPin());
 }
 
-Population::~Population() {
-}
+Population::~Population() {}
 
 void Population::draw() {
-    ImNodes::BeginNode(1);
+    ImNodes::BeginNode(id);
 
     ImNodes::BeginNodeTitleBar();
     ImGui::TextUnformatted("simple node :)");
     ImNodes::EndNodeTitleBar();
 
-    ImNodes::BeginInputAttribute(2);
-    ImGui::Text("input");
-    ImNodes::EndInputAttribute();
-
-    ImNodes::BeginOutputAttribute(3);
-    ImGui::Indent(40);
-    ImGui::Text("output");
-    ImNodes::EndOutputAttribute();
+    Node::draw();
 
     ImNodes::EndNode();
 }

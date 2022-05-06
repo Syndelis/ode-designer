@@ -1,6 +1,7 @@
 [submodule "lib/imgui"]
 	path = lib/imgui
 	url = https://github.com/Syndelis/imgui
+	branch = docking
 [submodule "lib/imnodes"]
 	path = lib/imnodes
 	url = https://github.com/Syndelis/imnodes

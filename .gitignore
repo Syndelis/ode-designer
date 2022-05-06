@@ -4,3 +4,4 @@ main
 
 # ImGui's settings file
 *.ini
+*.json
