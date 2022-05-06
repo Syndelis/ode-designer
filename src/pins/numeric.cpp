@@ -4,6 +4,6 @@
 void NumericPin::draw() {
 
     ImGui::PushItemWidth(100);
-    ImGui::InputDouble("", &value);
+    ImGui::InputFloat("", &value);
 
 }

@@ -9,7 +9,6 @@ public:
     virtual ~Population();
     virtual void draw();
 
-private:
 };
 
 #endif

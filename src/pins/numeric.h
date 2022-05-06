@@ -5,10 +5,10 @@
 
 class NumericPin : public Pin {
 public:
-    double value;
+    float value;
 
     NumericPin() : Pin(), value(0) {};
-    NumericPin(double startVal) : Pin(), value(startVal) {};
+    NumericPin(float startVal) : Pin(), value(startVal) {};
     
     virtual ~NumericPin() {};
     virtual void draw();

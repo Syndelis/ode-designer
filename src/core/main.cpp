@@ -13,6 +13,7 @@
 #include <GLFW/glfw3.h>
 #include <GL/gl.h>
 #include "../nodes/population.h"
+#include "../nodes/variable.h"
 
 /* -----------------------------------------------------------------------------
     FUNCTIONS
@@ -20,6 +21,7 @@
 
 auto testnode = new Population();
 auto testnode2 = new Population();
+auto testnode3 = new Variable("M₀");
 
 void draw() {
 
@@ -28,6 +30,7 @@ void draw() {
 
     testnode->draw();
     testnode2->draw();
+    testnode3->draw();
 
     ImNodes::EndNodeEditor();
     ImGui::End();
@@ -56,7 +59,8 @@ int main() {
     // ImGui Setup -----------------------------------------
     IMGUI_CHECKVERSION();
     ImGui::CreateContext();
-    ImGui::GetIO().ConfigFlags |= ImGuiConfigFlags_DockingEnable;
+    ImGui::GetIO().ConfigFlags |= ImGuiConfigFlags_DockingEnable |\
+    ImGuiConfigFlags_NavEnableKeyboard | ImGuiConfigFlags_NavEnableSetMousePos;
     auto io = ImGui::GetIO();
     setEelStyle(ImGui::GetStyle());
     ImNodes::CreateContext();
