@@ -15,26 +15,57 @@
 #include <GL/gl.h>
 #include "../nodes/population.h"
 #include "../nodes/variable.h"
+#include "../pins/base.h"
+#include "../nodes/base.h"
 
 /* -----------------------------------------------------------------------------
     FUNCTIONS
 ----------------------------------------------------------------------------- */
 
-auto testnode = new Population("A");
-auto testnode2 = new Population("B");
-auto testnode3 = new Variable("M₀");
+void minimapHoverCallback(int nodeId, void *userData) {
 
-void render(std::map<Pin*, Pin*> &links) {
+    ImGui::SetTooltip("%s", (Node::allNodes[nodeId])->name.c_str());
+
+}
+
+void process() {
+
+    // Rendering -------------------------------------------
 
     ImGui::Begin("simple node editor");
     ImNodes::BeginNodeEditor();
 
-    testnode->process(links);
-    testnode2->process(links);
-    testnode3->process(links);
+    // Node Handling ---------------------------------------
 
+    for (auto &[id, node] : Node::allNodes)
+        node->process();
+
+    // Link Drawing ----------------------------------------
+
+    for (auto &[srcId, srcPin] : Pin::allPins)
+        for (auto &[dstPin, id] : srcPin->linkedTo)
+            ImNodes::Link(id, srcId, dstPin->id);
+
+    ImNodes::MiniMap(.2f, ImNodesMiniMapLocation_BottomRight, minimapHoverCallback, nullptr);
     ImNodes::EndNodeEditor();
     ImGui::End();
+
+
+    // Link Processing --------------------------------------
+
+    int srcId, dstId;
+    if (ImNodes::IsLinkCreated(&srcId, &dstId)) {
+
+        auto srcPin = Pin::allPins[srcId];
+        auto dstPin = Pin::allPins[dstId];
+        srcPin->link(dstPin);
+
+    }
+
+    ImNodes::EditorContextSetZoom(
+        ImNodes::EditorContextGetZoom() + ImGui::GetIO().MouseWheel * .125,
+        ImGui::GetMousePos()
+    );
 
 }
 
@@ -71,8 +102,9 @@ int main() {
 
     // Application Setup -----------------------------------
 
-    std::vector<Node*> nodes;
-    std::map<Pin*, Pin*> links;
+    auto testnode = new Population("A");
+    auto testnode2 = new Population("B");
+    auto testnode3 = new Variable("M₀");
 
     // Main Loop -------------------------------------------
     while (!glfwWindowShouldClose(window)) {
@@ -86,7 +118,7 @@ int main() {
         ImGui::ShowDemoWindow();
         ImGuiID dock_id = ImGui::DockSpaceOverViewport(ImGui::GetMainViewport(), 0);
         ImGui::SetNextWindowDockID(dock_id, true);
-        render(links);
+        process();
 
         // Draw End -----------------------------------------
 

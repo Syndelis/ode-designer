@@ -5,3 +5,4 @@
 [submodule "lib/imnodes"]
 	path = lib/imnodes
 	url = https://github.com/Syndelis/imnodes
+	branch = zooming

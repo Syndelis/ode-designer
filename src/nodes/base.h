@@ -12,6 +12,7 @@
 class Node : public Element {
 public:
 
+    inline static std::map<unsigned int, Node*> allNodes;
     std::string name;
     std::vector<Pin*> inputs;
     std::vector<Pin*> outputs;
@@ -21,6 +22,7 @@ public:
 
     Node(char *name) : Element() {
         this->name = std::string(name);
+        allNodes[id] = this;
     }
 
     virtual ~Node() {};
@@ -39,8 +41,8 @@ public:
         }
 
     };
-    
-    virtual void process(std::map<Pin*, Pin*> &links) {
+
+    virtual void process() {
 
         unsigned int highlitColor = getHighlitColor();
 
