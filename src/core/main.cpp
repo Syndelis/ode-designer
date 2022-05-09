@@ -32,6 +32,7 @@ void process() {
 
     // Rendering -------------------------------------------
 
+    ImGui::PushStyleColor(ImGuiCol_WindowBg, IM_COL32(40, 40, 50, 200));
     ImGui::Begin("simple node editor");
     ImNodes::BeginNodeEditor();
 
@@ -43,13 +44,22 @@ void process() {
     // Link Drawing ----------------------------------------
 
     for (auto &[srcId, srcPin] : Pin::allPins)
-        for (auto &[dstPin, id] : srcPin->linkedTo)
-            ImNodes::Link(id, srcId, dstPin->id);
+        srcPin->renderLinks();
 
     ImNodes::MiniMap(.2f, ImNodesMiniMapLocation_BottomRight, minimapHoverCallback, nullptr);
+
+    float mouseWheel = ImGui::GetIO().MouseWheel;
+
+    if (mouseWheel && ImNodes::IsEditorHovered())
+        ImNodes::EditorContextSmoothZoom(
+            ImNodes::EditorContextGetZoom() + mouseWheel * .5f,
+            ImGui::GetMousePos()
+        );
+
     ImNodes::EndNodeEditor();
     ImGui::End();
 
+    ImGui::PopStyleColor();
 
     // Link Processing --------------------------------------
 
@@ -62,10 +72,10 @@ void process() {
 
     }
 
-    ImNodes::EditorContextSetZoom(
-        ImNodes::EditorContextGetZoom() + ImGui::GetIO().MouseWheel * .125,
-        ImGui::GetMousePos()
-    );
+    int linkId;
+    if (ImNodes::IsLinkHovered(&linkId)
+        && ImGui::IsMouseClicked(0))
+            Pin::unlink(linkId);
 
 }
 
@@ -93,7 +103,11 @@ int main() {
     ImGui::CreateContext();
     ImGui::GetIO().ConfigFlags |= ImGuiConfigFlags_DockingEnable |\
     ImGuiConfigFlags_NavEnableKeyboard | ImGuiConfigFlags_NavEnableSetMousePos;
+
     auto io = ImGui::GetIO();
+    auto iosevkaFont = io.Fonts->AddFontFromFileTTF("assets/fonts/Iosevka-regular.ttf", 16);
+    io.FontDefault = iosevkaFont;
+
     setEelStyle(ImGui::GetStyle());
     ImNodes::CreateContext();
 
