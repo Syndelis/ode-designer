@@ -6,3 +6,6 @@
 	path = lib/imnodes
 	url = https://github.com/Syndelis/imnodes
 	branch = zooming
+[submodule "lib/glfw"]
+	path = lib/glfw
+	url = https://github.com/Syndelis/glfw
