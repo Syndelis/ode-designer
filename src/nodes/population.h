@@ -1,7 +1,7 @@
 #ifndef NODES_POPULATION_H
 #define NODES_POPULATION_H
 
-#include "base.h"
+#include "node.h"
 
 class Population : public Node {
 public:

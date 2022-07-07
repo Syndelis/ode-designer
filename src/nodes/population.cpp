@@ -3,7 +3,7 @@
 #include <imnodes.h>
 
 Population::Population(char *name) : Node(name) {
-    inputs.push_back(new NumericPin());
+    inputs.push_back(new NumericPin(PinType::Input));
 }
 
 Population::~Population() {}

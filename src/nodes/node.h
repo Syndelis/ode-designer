@@ -7,7 +7,7 @@
 #include <string>
 #include <iostream>
 #include "../core/element.h"
-#include "../pins/base.h"
+#include "../pins/pin.h"
 
 class Node : public Element {
 public:

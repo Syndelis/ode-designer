@@ -15,8 +15,8 @@
 #include <GL/gl.h>
 #include "../nodes/population.h"
 #include "../nodes/variable.h"
-#include "../pins/base.h"
-#include "../nodes/base.h"
+#include "../pins/pin.h"
+#include "../nodes/node.h"
 
 /* -----------------------------------------------------------------------------
     FUNCTIONS
@@ -64,13 +64,8 @@ void process() {
     // Link Processing --------------------------------------
 
     int srcId, dstId;
-    if (ImNodes::IsLinkCreated(&srcId, &dstId)) {
-
-        auto srcPin = Pin::allPins[srcId];
-        auto dstPin = Pin::allPins[dstId];
-        srcPin->link(dstPin);
-
-    }
+    if (ImNodes::IsLinkCreated(&srcId, &dstId))
+        Pin::linkTogether(srcId, dstId);
 
     int linkId;
     if (ImNodes::IsLinkHovered(&linkId)

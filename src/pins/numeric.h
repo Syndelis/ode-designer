@@ -1,14 +1,14 @@
 #ifndef PINS_NUMERIC_H
 #define PINS_NUMERIC_H
 
-#include "base.h"
+#include "pin.h"
 
 class NumericPin : public Pin {
 public:
     float value;
 
-    NumericPin() : Pin(), value(0) {};
-    NumericPin(float startVal) : Pin(), value(startVal) {};
+    NumericPin(PinType type) : Pin(type), value(0) {};
+    NumericPin(PinType type, float startVal) : Pin(type), value(startVal) {};
     
     virtual ~NumericPin() {};
     virtual void renderContent();

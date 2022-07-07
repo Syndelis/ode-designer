@@ -1,7 +1,7 @@
 #ifndef NODES_INITIAL_H
 #define NODES_INITIAL_H
 
-#include "base.h"
+#include "node.h"
 #include <string>
 
 
