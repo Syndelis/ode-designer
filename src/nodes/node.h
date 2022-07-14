@@ -1,5 +1,5 @@
-#ifndef NODES_BASE_H
-#define NODES_BASE_H
+#ifndef NODES_NODE_H
+#define NODES_NODE_H
 
 #include <imnodes.h>
 #include <vector>
@@ -25,7 +25,9 @@ public:
         allNodes[id] = this;
     }
 
-    virtual ~Node() {};
+    virtual ~Node() {
+        allNodes.erase(id);
+    };
     virtual void renderPins() {
 
         for (auto &input : inputs) {
@@ -63,6 +65,16 @@ public:
         ImNodes::PopColorStyle();
         ImNodes::PopColorStyle();
 
+    }
+
+    template<class T> T *pushInput() {
+        inputs.push_back(new T(PinType::Input, (Element *)this));
+        return (T *)inputs.back();
+    }
+
+    template<class T> T *pushOutput() {
+        outputs.push_back(new T(PinType::Output, (Element *)this));
+        return (T *)outputs.back();
     }
 };
 

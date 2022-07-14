@@ -4,7 +4,7 @@
 #include <iostream>
 
 Variable::Variable(char *name) : Node(name) {
-    outputs.push_back(new NumericPin(PinType::Output));
+    pushOutput<NumericPin>();
 }
 
 Variable::~Variable() {}

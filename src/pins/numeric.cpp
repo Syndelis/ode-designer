@@ -4,6 +4,7 @@
 void NumericPin::renderContent() {
 
     ImGui::PushItemWidth(100);
-    ImGui::InputFloat("", &value);
+    if (ImGui::InputFloat("", &value))
+        outputData = std::to_string(value);
 
 }

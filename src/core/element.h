@@ -1,6 +1,8 @@
 #ifndef ELEMENT_H
 #define ELEMENT_H
 
+#include <string>
+
 static int nextId = 1;
 
 class Element {
