@@ -4,64 +4,38 @@
 #include <map>
 #include <imnodes.h>
 #include "../core/element.h"
+#include "../nodes/node.h"
+#include "../common/pin_type.h"
 #include <iostream>
 #include <stdio.h>
 
-enum class PinType : char {
-    Input,
-    Output
+enum class PinShape : char {
+    Circle=ImNodesPinShape_CircleFilled,
+    Square=ImNodesPinShape_QuadFilled,
+    Triangle=ImNodesPinShape_TriangleFilled,
 };
 
+void pushShapeStyle(PinShape shape);
+void popShapeStyle(PinShape shape);
+
+class Node;
 class Pin : public Element {
 public:
     inline static std::map<unsigned int, Pin*> allPins;
     std::map<int, Pin*> linkedTo;
     PinType type;
-    Element *parent;
-    std::string outputData, *inputData;
+    PinShape shape;
+    Node *parent;
 
-    static void unlink(int linkId) {
-        for (auto &[id, pin] : allPins)
-            if (pin->linkedTo.count(linkId)) {
-                pin->linkedTo.erase(linkId);
-                break;
-            }
-    }
-
-    static void linkTogether(int linkId1, int linkId2) {
-        Pin *pin1 = allPins[linkId1];
-        Pin *pin2 = allPins[linkId2];
-        
-        switch (pin1->type) {
-
-            case PinType::Input:
-                pin2->link(pin1);
-                break;
-
-            case PinType::Output:
-                pin1->link(pin2);
-                break;
-
-        }
-    }
+    static void unlink(int linkId);
+    static void linkTogether(int linkId1, int linkId2);
     
-    Pin(PinType type, Element *parent) : Element(), type(type), parent(parent) {
-        allPins[id] = this;
-    }
+    Pin(PinType type, Node *parent);
+    virtual ~Pin();
+    void link(Pin *other);
+    void renderLinks();
 
-    virtual ~Pin() {
-        allPins.erase(id);
-    }
-
-    void link(Pin *other) {
-        linkedTo[getNextId()] = other;
-        other->inputData = &outputData;
-    }
-
-    void renderLinks() {
-        for (auto &[linkId, dstPin] : linkedTo)
-            ImNodes::Link(linkId, id, dstPin->id);
-    }
+    virtual void renderPinConnector();
 };
 
 #endif

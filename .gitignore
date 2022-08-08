@@ -5,3 +5,6 @@ main
 # ImGui's settings file
 *.ini
 *.json
+
+# VS Code extension logs
+.vscode/*.log

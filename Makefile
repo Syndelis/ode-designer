@@ -25,6 +25,7 @@ all: $(GLFW_LIB) app
 app: $(OBJ_DIR) $(EXE)
 
 $(GLFW_LIB):
+	mkdir -p $(GLFW_BUILD_DIR)
 	cmake -S $(GLFW_SRC) -B $(GLFW_BUILD_DIR)
 	make -C $(GLFW_BUILD_DIR)
 

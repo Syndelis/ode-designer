@@ -2,14 +2,11 @@
 #define PINS_ECHO_H
 
 #include "pin.h"
-#include "../nodes/node.h"
 
 class EchoPin : public Pin {
 public:
 
-    EchoPin(PinType type, Element *parent) : Pin(type, parent) {
-        inputData = &((Node *)parent)->name;
-    };
+    EchoPin(PinType type, Node *parent) : Pin(type, parent) {};
     virtual ~EchoPin() {};
 
     virtual void renderContent();

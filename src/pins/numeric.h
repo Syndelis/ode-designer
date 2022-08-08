@@ -7,7 +7,7 @@ class NumericPin : public Pin {
 public:
     float value;
 
-    NumericPin(PinType type, Element *parent, float startVal=0) : Pin(type, parent), value(startVal) {};
+    NumericPin(PinType type, Node *parent, float startVal=0) : Pin(type, parent), value(startVal) {};
     virtual ~NumericPin() {};
 
     virtual void renderContent();

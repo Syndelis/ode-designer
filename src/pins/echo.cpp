@@ -3,6 +3,6 @@
 void EchoPin::renderContent() {
 
     ImGui::PushItemWidth(100);
-    ImGui::Text("%s", inputData->c_str());
+    ImGui::Text("Echo");
 
 }
