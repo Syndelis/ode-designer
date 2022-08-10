@@ -18,6 +18,8 @@
 #include "../pins/pin.h"
 #include "../nodes/node.h"
 
+static bool isContextMenuOpen = false;
+
 /* -----------------------------------------------------------------------------
     FUNCTIONS
 ----------------------------------------------------------------------------- */
@@ -28,13 +30,36 @@ void minimapHoverCallback(int nodeId, void *userData) {
 
 }
 
+void renderContextMenu() {
+    if (ImGui::BeginPopup("Create Node")) {
+        ImGui::Text("Hello there");
+        ImGui::EndPopup();
+    }
+
+    if (isContextMenuOpen)
+        ImGui::OpenPopup("Create Node");
+}
+
 void process() {
 
     // Rendering -------------------------------------------
 
     ImGui::PushStyleColor(ImGuiCol_WindowBg, IM_COL32(40, 40, 50, 200));
     ImGui::Begin("simple node editor");
+
+    renderContextMenu();
+
     ImNodes::BeginNodeEditor();
+
+    if (ImNodes::IsEditorHovered()) {
+        if (!isContextMenuOpen && ImGui::IsMouseClicked(ImGuiMouseButton_Right)) {
+            printf("should open\n");
+            isContextMenuOpen = true;
+        }
+    }
+    else {
+        isContextMenuOpen = false;
+    }
 
     // Node Handling ---------------------------------------
 
