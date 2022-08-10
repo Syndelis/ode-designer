@@ -1,5 +1,6 @@
-CC=g++ -std=c++17
+CC=g++ -std=c++20
 CFLAGS=-g -Wno-unused-result -ffunction-sections -fdata-sections -ffast-math -Wl,--gc-sections -Wl,--print-gc-sections
+CFLAGS=-g
 CFLAGS_LIB=-c
 
 IMGUI_SRC=$(wildcard lib/imgui/imgui*.cpp) lib/imgui/backends/imgui_impl_glfw.cpp lib/imgui/backends/imgui_impl_opengl3.cpp lib/imnodes/imnodes.cpp
@@ -9,7 +10,9 @@ GLFW_SRC=lib/glfw
 GLFW_BUILD_DIR=$(GLFW_SRC)/build
 GLFW_LIB=$(GLFW_BUILD_DIR)/src/libglfw3.a
 
-INCLUDE_DIRS=-I. $(foreach path,$(IMGUI_SRC_PATH),-I$(path)) -I$(GLFW_SRC)/include
+FMT_INC=lib/fmt/include
+
+INCLUDE_DIRS=-I. $(foreach path,$(IMGUI_SRC_PATH),-I$(path)) -I$(GLFW_SRC)/include -I$(FMT_INC)
 LINK_DIRS=
 LINKS=-lGL -lm -ldl -pthread
 DEFINE=

@@ -9,6 +9,8 @@ public:
     EchoPin(PinType type, Node *parent) : Pin(type, parent) {};
     virtual ~EchoPin() {};
 
+    virtual bool acceptsData() { return true; }
+
     virtual void renderContent();
 };
 

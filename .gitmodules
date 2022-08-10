@@ -1,11 +1,16 @@
 [submodule "lib/imgui"]
 	path = lib/imgui
 	url = https://github.com/Syndelis/imgui
-	branch = docking
+	branch = ode-designer
 [submodule "lib/imnodes"]
 	path = lib/imnodes
 	url = https://github.com/Syndelis/imnodes
-	branch = zooming
+	branch = ode-designer
 [submodule "lib/glfw"]
 	path = lib/glfw
 	url = https://github.com/Syndelis/glfw
+	branch = ode-designer
+[submodule "lib/fmt"]
+	path = lib/fmt
+	url = https://github.com/Syndelis/fmt
+	branch = ode-designer

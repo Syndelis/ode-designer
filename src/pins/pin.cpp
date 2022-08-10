@@ -51,6 +51,7 @@ void Pin::linkTogether(int linkId1, int linkId2) {
 Pin::Pin(PinType type, Node *parent) : Element(), type(type), parent(parent) {
     allPins[id] = this;
     shape = PinShape::Circle;
+    data = false;
 }
 
 Pin::~Pin() {
@@ -59,6 +60,9 @@ Pin::~Pin() {
 
 void Pin::link(Pin *other) {
     linkedTo[getNextId()] = other;
+
+    if (data.index())
+        other->trySendData(data);
 }
 
 void Pin::renderLinks() {

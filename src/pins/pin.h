@@ -2,6 +2,7 @@
 #define PINS_PIN_H
 
 #include <map>
+#include <variant>
 #include <imnodes.h>
 #include "../core/element.h"
 #include "../nodes/node.h"
@@ -26,6 +27,7 @@ public:
     PinType type;
     PinShape shape;
     Node *parent;
+    std::variant<bool, int, float, std::string> data;
 
     static void unlink(int linkId);
     static void linkTogether(int linkId1, int linkId2);
@@ -34,6 +36,22 @@ public:
     virtual ~Pin();
     void link(Pin *other);
     void renderLinks();
+
+    template<typename T> void setData(T data) {
+        this->data = data;
+        for (auto &[_, pin] : linkedTo)
+            pin->trySendData(data);
+    }
+
+    template<typename T> const T *getData() {
+        return std::get_if<T>(&this->data);
+    }
+
+    virtual bool acceptsData() { return false; }
+
+    template<typename T> inline void trySendData(T data) {
+        if (acceptsData()) setData(data);
+    }
 
     virtual void renderPinConnector();
 };
