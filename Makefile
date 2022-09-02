@@ -34,7 +34,7 @@ $(GLFW_LIB):
 $(OBJ_DIR):
 	mkdir -p $@
 
-$(EXE): $(OBJ)
+$(EXE): $(OBJ_DIR) $(OBJ)
 	$(CC) $(CFLAGS) $(OBJ) $(GLFW_LIB) -o $@ $(INCLUDE_DIRS) $(LINK_DIRS) $(LINKS) $(DEFINE)
 
 $(OBJ): $(OBJ_DIR)/%.o: %.cpp

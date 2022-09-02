@@ -30,13 +30,57 @@ void minimapHoverCallback(int nodeId, void *userData) {
 
 }
 
+// Context Menu --------------------------------------------
+
+typedef Node *(*NodeFactory) (char *);
+
+#define NODE_ENTRY(name) { #name, createNode<name>}
+#define MAX_NODE_NAME_LENGTH 50
+
+template <typename T>
+Node *createNode(char *name) {
+    return new T(name);
+}
+
+static std::map<std::string, NodeFactory> nodeFactories = {
+    NODE_ENTRY(Population),
+    NODE_ENTRY(Variable),
+};
+
+static NodeFactory *currentFactory = nullptr;
+static std::string currentNodeName = "";
+static char nodeName[MAX_NODE_NAME_LENGTH] = "";
+
 void renderContextMenu() {
-    if (ImGui::BeginPopup("Create Node")) {
-        ImGui::Text("Hello there");
+    if (ImGui::BeginPopupContextItem("Create Node")) {
+        
+        if (currentFactory) {
+            ImGui::Text("New %s", currentNodeName);
+            if (
+                ImGui::InputText(
+                    "##nodename", nodeName, MAX_NODE_NAME_LENGTH,
+                    ImGuiInputTextFlags_EnterReturnsTrue
+                ) || ImGui::Button("Create")
+            ) {
+                (*currentFactory)(nodeName);
+                currentFactory = nullptr;
+                nodeName[0] = '\0';
+                isContextMenuOpen = false;
+                ImGui::CloseCurrentPopup();
+            }
+        }
+
+        else
+            for (auto &[nodeName, nodeFactory] : nodeFactories)
+                if (ImGui::Selectable(nodeName.c_str())) {
+                    currentFactory = &nodeFactory;
+                    currentNodeName = nodeName;
+                }
+
         ImGui::EndPopup();
     }
 
-    if (isContextMenuOpen)
+    if (isContextMenuOpen || currentFactory)
         ImGui::OpenPopup("Create Node");
 }
 
