@@ -52,14 +52,11 @@ void process() {
     ImNodes::BeginNodeEditor();
 
     if (ImNodes::IsEditorHovered()) {
-        if (!isContextMenuOpen && ImGui::IsMouseClicked(ImGuiMouseButton_Right)) {
-            printf("should open\n");
+        if (!isContextMenuOpen && ImGui::IsMouseClicked(ImGuiMouseButton_Right))
             isContextMenuOpen = true;
-        }
     }
-    else {
+    else
         isContextMenuOpen = false;
-    }
 
     // Node Handling ---------------------------------------
 
