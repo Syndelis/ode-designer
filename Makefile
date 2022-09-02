@@ -24,8 +24,7 @@ EXE=main
 
 VPATH=$(wildcard src/*) $(IMGUI_SRC_PATH) $(dir GLFW_LIB)
 
-all: $(GLFW_LIB) app
-app: $(OBJ_DIR) $(EXE)
+all: $(GLFW_LIB) $(EXE)
 
 $(GLFW_LIB):
 	mkdir -p $(GLFW_BUILD_DIR)
@@ -41,8 +40,8 @@ $(EXE): $(OBJ)
 $(OBJ): $(OBJ_DIR)/%.o: %.cpp
 	$(CC) $(CFLAGS) $(CFLAGS_LIB) $< -o $@ $(INCLUDE_DIRS) $(LINK_DIRS) $(LINKS) $(DEFINE)
 
-clean: app/clean
-	rm -rf $(GLFW_BUILD_DIR) $(OBJ_DIR) $(EXE)
+full-clean: clean
+	rm -rf $(GLFW_BUILD_DIR)
 
-app/clean:
+clean:
 	rm -rf $(OBJ_DIR) $(EXE)
