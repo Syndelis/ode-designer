@@ -1,5 +1,6 @@
 #include "sign.h"
 #include <imgui.h>
+#include "../common/imgui_combo.h"
 
 static const char *options[] = {"+", "-"};
 
@@ -11,21 +12,7 @@ void SignPin::renderContent() {
 
     ImGui::PushItemWidth(20);
 
-    if (
-        ImGui::BeginCombo(
-            "##signcombo", options[selected],
-            ImGuiComboFlags_NoArrowButton)
-    ) {
-        for (int n = 0; n < IM_ARRAYSIZE(options); n++) {
-            bool is_selected = (selected == n);
-            if (ImGui::Selectable(options[n], is_selected))
-                selected = n;
-
-            if (is_selected)
-                ImGui::SetItemDefaultFocus();
-        }
-        ImGui::EndCombo();
-    }
+    IMGUI_COMBO("##signcombo", options, selected, ImGuiComboFlags_NoArrowButton);
 
     ImGui::SameLine();
 

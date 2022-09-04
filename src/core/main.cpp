@@ -15,6 +15,7 @@
 #include <GL/gl.h>
 #include "../nodes/population.h"
 #include "../nodes/variable.h"
+#include "../nodes/combinator.h"
 #include "../pins/pin.h"
 #include "../nodes/node.h"
 
@@ -45,6 +46,7 @@ Node *createNode(char *name) {
 static std::map<std::string, NodeFactory> nodeFactories = {
     NODE_ENTRY(Population),
     NODE_ENTRY(Variable),
+    NODE_ENTRY(Combinator),
 };
 
 static NodeFactory *currentFactory = nullptr;

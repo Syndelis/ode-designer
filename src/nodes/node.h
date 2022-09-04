@@ -28,6 +28,13 @@ public:
     virtual void process();
     virtual bool onPinLinked(Pin *thisPin, Node *otherNode);
     virtual void onPinUnlinked(Pin *thisPin, Node *otherNode);
+    virtual Pin *getNextAvailablePin(PinType type) {
+        if (type == PinType::Input)
+            return inputs[inputs.size() - 1];
+
+        else if (type == PinType::Output)
+            return outputs[outputs.size() - 1];
+    };
 
     template<class T> T *pushInput() {
         inputs.push_back(new T(PinType::Input, this));

@@ -1,7 +1,8 @@
 CC=g++ -std=c++20
-CFLAGS=-g -Wno-unused-result -ffunction-sections -fdata-sections -ffast-math -Wl,--gc-sections -Wl,--print-gc-sections
 CFLAGS=-g
 CFLAGS_LIB=-c
+
+release : CFLAGS=-g -Wno-unused-result -ffunction-sections -fdata-sections -ffast-math -Wl,--gc-sections -Wl,--print-gc-sections
 
 IMGUI_SRC=$(wildcard lib/imgui/imgui*.cpp) lib/imgui/backends/imgui_impl_glfw.cpp lib/imgui/backends/imgui_impl_opengl3.cpp lib/imnodes/imnodes.cpp
 IMGUI_SRC_PATH=$(sort $(foreach src,$(IMGUI_SRC),$(dir $(src))))
@@ -25,6 +26,7 @@ EXE=main
 VPATH=$(wildcard src/*) $(IMGUI_SRC_PATH) $(dir GLFW_LIB)
 
 all: $(GLFW_LIB) $(EXE)
+release: all
 
 $(GLFW_LIB):
 	mkdir -p $(GLFW_BUILD_DIR)
