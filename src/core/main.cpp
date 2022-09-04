@@ -51,11 +51,21 @@ static NodeFactory *currentFactory = nullptr;
 static std::string currentNodeName = "";
 static char nodeName[MAX_NODE_NAME_LENGTH] = "";
 
+void resetContextMenuState() {
+    currentFactory = nullptr;
+    nodeName[0] = '\0';
+}
+
+void openContextMenu() {
+    isContextMenuOpen = true;
+    resetContextMenuState();
+}
+
 void renderContextMenu() {
     if (ImGui::BeginPopupContextItem("Create Node")) {
         
         if (currentFactory) {
-            ImGui::Text("New %s", currentNodeName);
+            ImGui::Text("New %s", currentNodeName.c_str());
             if (
                 ImGui::InputText(
                     "##nodename", nodeName, MAX_NODE_NAME_LENGTH,
@@ -63,9 +73,8 @@ void renderContextMenu() {
                 ) || ImGui::Button("Create")
             ) {
                 (*currentFactory)(nodeName);
-                currentFactory = nullptr;
-                nodeName[0] = '\0';
                 isContextMenuOpen = false;
+                resetContextMenuState();
                 ImGui::CloseCurrentPopup();
             }
         }
@@ -75,12 +84,13 @@ void renderContextMenu() {
                 if (ImGui::Selectable(nodeName.c_str())) {
                     currentFactory = &nodeFactory;
                     currentNodeName = nodeName;
+                    isContextMenuOpen = true;
                 }
 
         ImGui::EndPopup();
     }
 
-    if (isContextMenuOpen || currentFactory)
+    if (isContextMenuOpen)
         ImGui::OpenPopup("Create Node");
 }
 
@@ -97,7 +107,7 @@ void process() {
 
     if (ImNodes::IsEditorHovered()) {
         if (!isContextMenuOpen && ImGui::IsMouseClicked(ImGuiMouseButton_Right))
-            isContextMenuOpen = true;
+            openContextMenu();
     }
     else
         isContextMenuOpen = false;
