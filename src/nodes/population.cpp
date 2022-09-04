@@ -1,12 +1,13 @@
 #include "population.h"
 #include "../pins/echo.h"
+#include "../pins/sign.h"
 #include "../pins/ghost.h"
 #include "../nodes/node.h"
 #include <imnodes.h>
 #include <algorithm>
 
 Population::Population(char *name) : Node(name) {
-    pushInput<EchoPin>();
+    pushInput<SignPin>();
     ghost = pushOutput<GhostPin>();
 }
 
@@ -15,7 +16,7 @@ Population::~Population() {}
 void Population::renderContent() {}
 
 bool Population::onPinLinked(Pin *thisPin, Node *otherNode) {
-    pushInput<EchoPin>();
+    pushInput<SignPin>();
     return true;
 }
 
