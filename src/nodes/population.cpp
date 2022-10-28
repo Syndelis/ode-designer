@@ -17,6 +17,9 @@ void Population::renderContent() {}
 
 bool Population::onPinLinked(Pin *thisPin, Node *otherNode) {
 
+    if (!Node::onPinLinked(thisPin, otherNode))
+        return false;
+
     if (thisPin->type == PinType::Input)
         pushInput<SignPin>();
 

@@ -14,7 +14,7 @@ class Pin;
 class Node : public Element {
 public:
 
-    inline static std::map<unsigned int, Node*> allNodes;
+    inline static std::map<ElementID, Node*> allNodes;
     std::string name;
     std::vector<Pin*> inputs;
     std::vector<Pin*> outputs;

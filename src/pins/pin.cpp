@@ -7,10 +7,11 @@
 #include <iostream>
 #include <stdio.h>
 
-void Pin::unlink(int linkId) {
+void Pin::unlink(ElementID linkId) {
     for (auto &[id, pin] : allPins)
         if (pin->linkedTo.count(linkId)) {
-            Pin *otherPin = pin->linkedTo.extract(linkId).mapped();
+            Pin *otherPin = pin->linkedTo.extract(linkId).mapped().target;
+            otherPin->canLink = true;
 
             Node *parent = pin->parent;
             Node *otherParent = otherPin->parent;
@@ -22,7 +23,7 @@ void Pin::unlink(int linkId) {
         }
 }
 
-void Pin::linkTogether(int linkId1, int linkId2) {
+void Pin::linkTogether(ElementID linkId1, ElementID linkId2, bool isVisible) {
     Pin *pin1 = allPins[linkId1];
     Pin *pin2 = allPins[linkId2];
     
@@ -38,17 +39,17 @@ void Pin::linkTogether(int linkId1, int linkId2) {
 
     switch (pin1->type) {
         case PinType::Input:
-            pin2->link(pin1);
+            pin2->link(pin1, isVisible);
             break;
 
         case PinType::Output:
-            pin1->link(pin2);
+            pin1->link(pin2, isVisible);
             break;
     }
 
 }
 
-Pin::Pin(PinType type, Node *parent) : Element(), type(type), parent(parent) {
+Pin::Pin(PinType type, Node *parent) : Element(), type(type), parent(parent), canLink(true) {
     allPins[id] = this;
     shape = PinShape::Circle;
     data = false;
@@ -58,16 +59,22 @@ Pin::~Pin() {
     allPins.erase(id);
 }
 
-void Pin::link(Pin *other) {
-    linkedTo[getNextId()] = other;
+void Pin::link(Pin *other, bool isVisible) {
+    linkedTo[getNextId()] = LinkedPin { target: other, isVisible: isVisible };
+    other->canLink = false;
 
     if (data.index())
         other->trySendData(data);
 }
 
 void Pin::renderLinks() {
-    for (auto &[linkId, dstPin] : linkedTo)
-        ImNodes::Link(linkId, id, dstPin->id);
+    for (auto &[linkId, dstLinkedPin] : linkedTo) {
+        Pin *dstPin = dstLinkedPin.target;
+        bool isVisible = dstLinkedPin.isVisible;
+
+        if (isVisible)
+            ImNodes::Link(linkId, id, dstPin->id);
+    }
 }
 
 void pushShapeStyle(PinShape shape) {
@@ -95,7 +102,7 @@ void Pin::renderPinConnector() {
 
     switch (type) {
         case PinType::Input:
-            ImNodes::BeginInputAttribute(id, (ImNodesPinShape) shape);
+            ImNodes::BeginInputAttribute(id, (ImNodesPinShape) shape ^ canLink);
             break;
         case PinType::Output:
             ImNodes::BeginOutputAttribute(id, (ImNodesPinShape) shape);

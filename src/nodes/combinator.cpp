@@ -30,6 +30,10 @@ void updateExpression(Combinator *comb) {
 
 }
 
+void Combinator::updateExpressionInBackground() {
+    std::thread{updateExpression, this}.detach();
+}
+
 Combinator::Combinator(char *name) : Node(name), selected(0) {
     expression_pin = pushOutput<EchoPin>();
     pushInput<EchoPin>();
@@ -39,25 +43,31 @@ Combinator::~Combinator() {}
 
 void Combinator::renderContent() {
 
+    int prevSelected = selected;
+
     ImGui::Text("Opeartion: ");
     ImGui::SameLine();
     IMGUI_COMBO("##operationcombo", options, selected, 0);
+
+    if (prevSelected != selected)
+        updateExpressionInBackground();
 
 }
 
 bool Combinator::onPinLinked(Pin *thisPin, Node *otherNode) {
 
+    if (!Node::onPinLinked(thisPin, otherNode))
+        return false;
+
     if (thisPin->type == PinType::Input) {
         pushInput<EchoPin>();
 
-        std::string expression = "";
         const char *operation = options[selected];
 
-
         Pin *otherPin = otherNode->getNextAvailablePin(PinType::Input);
-        Pin::linkTogether(expression_pin->id, otherPin->id);
+        Pin::linkTogether(expression_pin->id, otherPin->id, false);
 
-        std::thread{updateExpression, this}.detach();
+        updateExpressionInBackground();
     }
 
     return true;
@@ -69,12 +79,14 @@ void Combinator::onPinUnlinked(Pin *thisPin, Node *otherNode) {
     if (thisPin->type == PinType::Input) {
 
         int linkId = 0;
-        for (auto &[thisLinkId, pin] : expression_pin->linkedTo)
-            if (pin->parent == otherNode)
+        for (auto &[thisLinkId, linkedPin] : expression_pin->linkedTo)
+            if (linkedPin.target->parent == otherNode)
                 linkId = thisLinkId;
 
         Pin::unlink(linkId);
         inputs.erase(std::find(inputs.begin(), inputs.end(), thisPin));
+
+        updateExpressionInBackground();
     
     }
 

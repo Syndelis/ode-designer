@@ -3,13 +3,14 @@
 
 #include <string>
 
-static int nextId = 1;
+typedef unsigned int ElementID;
+static ElementID nextId = 1;
 
 class Element {
 public:
-    int id;
+    ElementID id;
 
-    static int getNextId() { return nextId++; }
+    static ElementID getNextId() { return nextId++; }
 
     Element(): id(nextId++) {}
     virtual ~Element() {}

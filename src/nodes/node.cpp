@@ -50,7 +50,7 @@ void Node::process() {
 }
 
 bool Node::onPinLinked(Pin *thisPin, Node *otherNode) {
-    return true;
+    return thisPin->canLink;
 }
 
 void Node::onPinUnlinked(Pin *thisPin, Node *otherNode) {}

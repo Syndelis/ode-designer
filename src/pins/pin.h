@@ -19,28 +19,38 @@ enum class PinShape : char {
 void pushShapeStyle(PinShape shape);
 void popShapeStyle(PinShape shape);
 
+class Pin;
+
+typedef struct {
+    Pin *target;
+    bool isVisible;
+} LinkedPin;
+
 class Node;
 class Pin : public Element {
 public:
-    inline static std::map<unsigned int, Pin*> allPins;
-    std::map<int, Pin*> linkedTo;
+    inline static std::map<ElementID, Pin*> allPins;
+    std::map<ElementID, LinkedPin> linkedTo;
     PinType type;
     PinShape shape;
     Node *parent;
+    bool canLink;
     std::variant<bool, int, float, std::string> data;
 
-    static void unlink(int linkId);
-    static void linkTogether(int linkId1, int linkId2);
+    static void unlink(ElementID linkId);
+    static void linkTogether(ElementID linkId1, ElementID linkId2, bool isVisible=true);
     
     Pin(PinType type, Node *parent);
     virtual ~Pin();
-    void link(Pin *other);
+    void link(Pin *other, bool isVisible=true);
     void renderLinks();
 
     template<typename T> void setData(T data) {
         this->data = data;
-        for (auto &[_, pin] : linkedTo)
+        for (auto &[_, linkedPin] : linkedTo) {
+            Pin *pin = linkedPin.target;
             pin->trySendData(data);
+        }
     }
 
     template<typename T> const T *getData() {
