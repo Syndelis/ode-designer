@@ -10,11 +10,11 @@
 #define FMT_HEADER_ONLY
 #include <fmt/std.h>
 
-static const char *options[] = {"*", "/"};
+static const char *options[] = {"*", "/", "+", "-"};
 
 void updateExpression(Combinator *comb) {
 
-    std::string expression = "";
+    std::string expression = "(";
     const char *operation = options[comb->selected];
 
     for (Pin *pin : comb->inputs)
@@ -23,8 +23,10 @@ void updateExpression(Combinator *comb) {
                 .append(fmt::format("{}", pin->data))\
                 .append(operation);
 
-    if (expression.length() > 0)
+    if (expression.length() > 0) {
         expression.pop_back();
+        expression.push_back(')');
+    }
 
     comb->expression_pin->setData(expression);
 
@@ -64,8 +66,14 @@ bool Combinator::onPinLinked(Pin *thisPin, Node *otherNode) {
 
         const char *operation = options[selected];
 
-        Pin *otherPin = otherNode->getNextAvailablePin(PinType::Input);
-        Pin::linkTogether(expression_pin->id, otherPin->id, false);
+        // If the other pin's parent is a Combinator, then we shouldn't
+        // try to make automatic links, since that would bring us to a loop.
+        // After all, the other Combinator doesn't need our expression, it
+        // is responsible for supplying it to us!
+        if (!dynamic_cast<Combinator*>(otherNode)) {
+            Pin *otherPin = otherNode->getNextAvailablePin(PinType::Input);
+            Pin::linkTogether(expression_pin->id, otherPin->id, false);
+        }
 
         updateExpressionInBackground();
     }

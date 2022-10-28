@@ -189,9 +189,12 @@ int main() {
 
     // Application Setup -----------------------------------
 
-    auto testnode = new Population("A");
-    auto testnode2 = new Population("B");
-    auto testnode3 = new Variable("M₀");
+    new Population("A");
+    new Population("B");
+    new Population("C");
+
+    new Combinator("ab");
+    new Combinator("abc");
 
     // Main Loop -------------------------------------------
     while (!glfwWindowShouldClose(window)) {
