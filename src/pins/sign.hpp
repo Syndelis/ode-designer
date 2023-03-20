@@ -1,8 +1,8 @@
 #ifndef PINS_SIGN_H
 #define PINS_SIGN_H
 
-#include "pin.h"
-#include "echo.h"
+#include "pin.hpp"
+#include "echo.hpp"
 
 class SignPin : public EchoPin {
 public:

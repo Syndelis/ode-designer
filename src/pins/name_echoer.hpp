@@ -1,7 +1,7 @@
 #ifndef PINS_NAME_ECHOER_H
 #define PINS_NAME_ECHOER_H
 
-#include "pin.h"
+#include "pin.hpp"
 
 class NameEchoerPin : public Pin {
 public:

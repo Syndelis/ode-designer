@@ -1,7 +1,7 @@
 #ifndef PINS_ECHO_H
 #define PINS_ECHO_H
 
-#include "pin.h"
+#include "pin.hpp"
 
 class EchoPin : public Pin {
 public:

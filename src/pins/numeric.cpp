@@ -1,4 +1,4 @@
-#include "numeric.h"
+#include "numeric.hpp"
 #include <imgui.h>
 
 void NumericPin::renderContent() {

@@ -1,11 +1,11 @@
-#include "node.h"
+#include "node.hpp"
 #include <imnodes.h>
 #include <vector>
 #include <map>
 #include <string>
 #include <iostream>
-#include "../core/element.h"
-#include "../pins/pin.h"
+#include "../core/element.hpp"
+#include "../pins/pin.hpp"
 
 Node::Node(char *name) : Element() {
     this->name = std::string(name);

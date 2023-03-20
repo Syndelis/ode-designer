@@ -1,4 +1,4 @@
-#include "style.h"
+#include "style.hpp"
 
 // Obtained from https://github.com/berdal84/Nodable/blob/master/src/app/src/Settings.cpp
 void setNodableStyle(ImGuiStyle& _style) {

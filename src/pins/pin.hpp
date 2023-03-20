@@ -4,9 +4,9 @@
 #include <map>
 #include <variant>
 #include <imnodes.h>
-#include "../core/element.h"
-#include "../nodes/node.h"
-#include "../common/pin_type.h"
+#include "../core/element.hpp"
+#include "../nodes/node.hpp"
+#include "../common/pin_type.hpp"
 #include <iostream>
 #include <stdio.h>
 

@@ -1,8 +1,8 @@
-#include "combinator.h"
-#include "../pins/pin.h"
-#include "../pins/echo.h"
-#include "../pins/ghost.h"
-#include "../common/imgui_combo.h"
+#include "combinator.hpp"
+#include "../pins/pin.hpp"
+#include "../pins/echo.hpp"
+#include "../pins/ghost.hpp"
+#include "../common/imgui_combo.hpp"
 #include <imgui.h>
 #include <algorithm>
 #include <thread>

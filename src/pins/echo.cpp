@@ -1,4 +1,4 @@
-#include "echo.h"
+#include "echo.hpp"
 #include <imgui.h>
 
 #define FMT_HEADER_ONLY

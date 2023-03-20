@@ -1,5 +1,5 @@
-#include "variable.h"
-#include "../pins/numeric.h"
+#include "variable.hpp"
+#include "../pins/numeric.hpp"
 #include <imnodes.h>
 #include <iostream>
 

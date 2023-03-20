@@ -1,8 +1,8 @@
 #ifndef NODES_POPULATION_H
 #define NODES_POPULATION_H
 
-#include "../pins/pin.h"
-#include "node.h"
+#include "../pins/pin.hpp"
+#include "node.hpp"
 
 class Population : public Node {
 public:

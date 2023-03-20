@@ -1,6 +1,6 @@
-#include "sign.h"
+#include "sign.hpp"
 #include <imgui.h>
-#include "../common/imgui_combo.h"
+#include "../common/imgui_combo.hpp"
 
 static const char *options[] = {"+", "-"};
 

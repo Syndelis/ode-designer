@@ -10,14 +10,14 @@
 #include <imnodes.h>
 #include <imgui_impl_glfw.h>
 #include <imgui_impl_opengl3.h>
-#include "style.h"
+#include "style.hpp"
 #include <GLFW/glfw3.h>
 #include <GL/gl.h>
-#include "../nodes/population.h"
-#include "../nodes/variable.h"
-#include "../nodes/combinator.h"
-#include "../pins/pin.h"
-#include "../nodes/node.h"
+#include "../nodes/population.hpp"
+#include "../nodes/variable.hpp"
+#include "../nodes/combinator.hpp"
+#include "../pins/pin.hpp"
+#include "../nodes/node.hpp"
 
 static bool isContextMenuOpen = false;
 

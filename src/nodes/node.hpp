@@ -6,9 +6,9 @@
 #include <map>
 #include <string>
 #include <iostream>
-#include "../core/element.h"
-#include "../pins/pin.h"
-#include "../common/pin_type.h"
+#include "../core/element.hpp"
+#include "../pins/pin.hpp"
+#include "../common/pin_type.hpp"
 
 class Pin;
 class Node : public Element {

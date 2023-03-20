@@ -1,8 +1,8 @@
-#include "population.h"
-#include "../pins/echo.h"
-#include "../pins/sign.h"
-#include "../pins/name_echoer.h"
-#include "../nodes/node.h"
+#include "population.hpp"
+#include "../pins/echo.hpp"
+#include "../pins/sign.hpp"
+#include "../pins/name_echoer.hpp"
+#include "../nodes/node.hpp"
 #include <imnodes.h>
 #include <algorithm>
 

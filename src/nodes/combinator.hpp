@@ -1,7 +1,7 @@
 #ifndef NODES_COMBINATOR_H
 #define NODES_COMBINATOR_H
 
-#include "node.h"
+#include "node.hpp"
 
 class Combinator : public Node {
 public:

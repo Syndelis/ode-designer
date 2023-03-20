@@ -1,7 +1,7 @@
 #ifndef PINS_NUMERIC_H
 #define PINS_NUMERIC_H
 
-#include "pin.h"
+#include "pin.hpp"
 
 class NumericPin : public Pin {
 public:
