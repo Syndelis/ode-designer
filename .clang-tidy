@@ -1,0 +1,40 @@
+---
+Checks: >
+  clang-diagnostic-*,
+  clang-analyzer-*,
+  -clang-analyzer-optin.cplusplus.UninitializedObject,
+  cppcoreguidelines-*,
+  -cppcoreguidelines-avoid-non-const-global-variables,
+  -cppcoreguidelines-pro-type-vararg,
+  -cppcoreguidelines-avoid-c-arrays,
+  -cppcoreguidelines-avoid-magic-numbers,
+  -cppcoreguidelines-macro-usage,
+  -cppcoreguidelines-pro-bounds-array-to-pointer-decay,
+  -cppcoreguidelines-pro-bounds-pointer-arithmetic,
+  -cppcoreguidelines-init-variables,
+  -cppcoreguidelines-special-member-functions,
+  -cppcoreguidelines-prefer-member-initializer,
+  modernize-*,
+  -modernize-avoid-c-arrays,
+  -modernize-use-trailing-return-type,
+  -modernize-use-nullptr,
+
+WarningsAsErrors: true
+
+HeaderFilterRegex: ''
+
+AnalyzeTemporaryDtors: false
+
+FormatStyle: webkit
+
+CheckOptions:
+  - key:    modernize-use-default-member-init.UseAssignment
+    value:  true
+  - key:    readability-uppercase-literal-suffix.NewSuffixes
+    value:  'L;LL;LU;LLU;U;UL;ULL'
+  - key:    bugprone-unhandled-self-assignment.WarnOnlyIfThisHasSuspiciousField
+    value:  true
+  - key:    cppcoreguidelines-non-private-member-variables-in-classes.IgnoreClassesWithAllMemberVariablesBeingPublic
+    value:  '1'
+...
+

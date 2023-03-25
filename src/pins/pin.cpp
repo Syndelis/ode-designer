@@ -5,7 +5,7 @@
 #include "../core/element.hpp"
 #include "../nodes/node.hpp"
 #include <iostream>
-#include <stdio.h>
+#include <cstdio>
 
 void Pin::unlink(ElementID linkId) {
     for (auto &[id, pin] : allPins)
@@ -60,7 +60,7 @@ Pin::~Pin() {
 }
 
 void Pin::link(Pin *other, bool isVisible) {
-    linkedTo[getNextId()] = LinkedPin { target: other, isVisible: isVisible };
+    linkedTo[getNextId()] = LinkedPin { .target = other, .isVisible = isVisible };
     other->canLink = false;
 
     if (data.index())

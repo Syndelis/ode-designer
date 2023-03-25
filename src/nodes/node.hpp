@@ -29,12 +29,16 @@ public:
     virtual bool onPinLinked(Pin *thisPin, Node *otherNode);
     virtual void onPinUnlinked(Pin *thisPin, Node *otherNode);
     virtual Pin *getNextAvailablePin(PinType type) {
-        if (type == PinType::Input)
-            return inputs[inputs.size() - 1];
+        switch (type) {
+            case PinType::Input:
+                return inputs[inputs.size() - 1];
+                break;
 
-        else if (type == PinType::Output)
-            return outputs[outputs.size() - 1];
-    };
+            case PinType::Output:
+                return outputs[outputs.size() - 1];
+                break;
+        }
+    }
 
     template<class T> T *pushInput() {
         inputs.push_back(new T(PinType::Input, this));

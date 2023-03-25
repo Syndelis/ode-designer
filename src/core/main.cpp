@@ -36,11 +36,11 @@ void minimapHoverCallback(int nodeId, void *userData) {
 using NodeFactory = Node *(*)(char *);
 
 #define NODE_ENTRY(name) { #name, createNode<name>}
-#define MAX_NODE_NAME_LENGTH 50
+const int MAX_NODE_NAME_LENGTH = 50;
 
 template <typename T>
 Node *createNode(char *name) {
-    return new T(name);
+    return new T(name);  // NOLINT(cppcoreguidelines-owning-memory)
 }
 
 static std::map<std::string, NodeFactory> nodeFactories = {
@@ -128,7 +128,7 @@ void process() {
 
     float mouseWheel = ImGui::GetIO().MouseWheel;
 
-    if (mouseWheel && ImNodes::IsEditorHovered())
+    if (mouseWheel && ImNodes::IsEditorHovered())  // NOLINT(cppcoreguidelines-narrowing-conversions)
         ImNodes::EditorContextSmoothZoom(
             ImNodes::EditorContextGetZoom() + mouseWheel * .5f,
             ImGui::GetMousePos()
@@ -189,12 +189,12 @@ int main() {
 
     // Application Setup -----------------------------------
 
-    new Population("A");
-    new Population("B");
-    new Population("C");
+    new Population("A");  // NOLINT(clang-diagnostic-writable-strings, clang-analyzer-cplusplus.NewDeleteLeaks)
+    new Population("B");  // NOLINT(clang-diagnostic-writable-strings, clang-analyzer-cplusplus.NewDeleteLeaks)
+    new Population("C");  // NOLINT(clang-diagnostic-writable-strings, clang-analyzer-cplusplus.NewDeleteLeaks)
 
-    new Combinator("ab");
-    new Combinator("abc");
+    new Combinator("ab");  // NOLINT(clang-diagnostic-writable-strings, clang-analyzer-cplusplus.NewDeleteLeaks)
+    new Combinator("abc");  // NOLINT(clang-diagnostic-writable-strings, clang-analyzer-cplusplus.NewDeleteLeaks)
 
     // Main Loop -------------------------------------------
     while (!glfwWindowShouldClose(window)) {
