@@ -7,7 +7,7 @@ class GhostPin : public Pin {
 public:
 
     GhostPin(PinType type, Node *parent) : Pin(type, parent) {};
-    virtual ~GhostPin() {};
+    ~GhostPin() override = default;
 
     virtual void renderContent();
     virtual void renderPinConnector();

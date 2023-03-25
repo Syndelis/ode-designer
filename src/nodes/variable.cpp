@@ -7,8 +7,6 @@ Variable::Variable(char *name) : Node(name) {
     pushOutput<NumericPin>();
 }
 
-Variable::~Variable() {}
-
 void Variable::renderContent() {
     if (ImGui::Checkbox("Range?", &is_range)) {
 

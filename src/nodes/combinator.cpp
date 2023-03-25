@@ -41,8 +41,6 @@ Combinator::Combinator(char *name) : Node(name), selected(0) {
     pushInput<EchoPin>();
 }
 
-Combinator::~Combinator() {}
-
 void Combinator::renderContent() {
 
     int prevSelected = selected;

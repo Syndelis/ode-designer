@@ -13,7 +13,7 @@ public:
     static ElementID getNextId() { return nextId++; }
 
     Element(): id(nextId++) {}
-    virtual ~Element() {}
+    virtual ~Element() = default;
     virtual void renderContent() {}
 };
 

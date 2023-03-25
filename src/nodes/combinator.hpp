@@ -12,7 +12,7 @@ public:
     virtual inline unsigned int getHighlitColor() { return IM_COL32(6, 214, 160, 255); }
 
     Combinator(char *name);
-    virtual ~Combinator();
+    ~Combinator() override = default;
     virtual void renderContent();
     virtual bool onPinLinked(Pin *thisPin, Node *otherNode);
     virtual void onPinUnlinked(Pin *thisPin, Node *otherNode);

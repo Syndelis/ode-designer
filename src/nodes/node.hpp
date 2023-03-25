@@ -23,7 +23,7 @@ public:
     virtual inline unsigned int getHighlitColor() { return IM_COL32(255, 255, 255, 255); }
 
     Node(char *name);
-    virtual ~Node();
+    ~Node() override;
     virtual void renderPins();
     virtual void process();
     virtual bool onPinLinked(Pin *thisPin, Node *otherNode);

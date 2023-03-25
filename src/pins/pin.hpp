@@ -41,7 +41,7 @@ public:
     static void linkTogether(ElementID linkId1, ElementID linkId2, bool isVisible=true);
     
     Pin(PinType type, Node *parent);
-    virtual ~Pin();
+    ~Pin() override;
     void link(Pin *other, bool isVisible=true);
     void renderLinks();
 

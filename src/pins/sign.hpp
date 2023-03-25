@@ -9,7 +9,7 @@ public:
     int selected;
 
     SignPin(PinType type, Node *parent) : EchoPin(type, parent), selected(0) {};
-    virtual ~SignPin() {};
+    ~SignPin() override = default;
 
     const char *getSign();
 

@@ -11,8 +11,6 @@ Population::Population(char *name) : Node(name) {
     pushInput<SignPin>();
 }
 
-Population::~Population() {}
-
 void Population::renderContent() {}
 
 bool Population::onPinLinked(Pin *thisPin, Node *otherNode) {

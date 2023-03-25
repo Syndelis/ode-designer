@@ -17,7 +17,7 @@ public:
     float range_max = 0;
 
     Variable(char *name);
-    virtual ~Variable();
+    ~Variable() override = default;
     virtual void renderContent();
 
 };

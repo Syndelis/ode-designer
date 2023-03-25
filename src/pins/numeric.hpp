@@ -10,7 +10,7 @@ public:
     NumericPin(PinType type, Node *parent, float startVal=0) : Pin(type, parent), value(startVal) {
         data = value;
     };
-    virtual ~NumericPin() {};
+     ~NumericPin() override = default;
 
     virtual void renderContent();
 };

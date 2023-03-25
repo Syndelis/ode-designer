@@ -9,7 +9,7 @@ public:
     NameEchoerPin(PinType type, Node *parent) : Pin(type, parent) {
         setData(parent->name);
     };
-    virtual ~NameEchoerPin() {};
+    ~NameEchoerPin() override = default;
 
     virtual void renderContent() {};
 

@@ -7,7 +7,7 @@ class EchoPin : public Pin {
 public:
 
     EchoPin(PinType type, Node *parent) : Pin(type, parent) {};
-    virtual ~EchoPin() {};
+    ~EchoPin() override = default;
 
     virtual bool acceptsData() { return true; }
 
