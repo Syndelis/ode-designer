@@ -3,7 +3,7 @@
 
 #include <string>
 
-typedef unsigned int ElementID;
+using ElementID = unsigned int;
 static ElementID nextId = 1;
 
 class Element {

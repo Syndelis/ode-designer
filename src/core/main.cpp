@@ -33,7 +33,7 @@ void minimapHoverCallback(int nodeId, void *userData) {
 
 // Context Menu --------------------------------------------
 
-typedef Node *(*NodeFactory) (char *);
+using NodeFactory = Node *(*)(char *);
 
 #define NODE_ENTRY(name) { #name, createNode<name>}
 #define MAX_NODE_NAME_LENGTH 50

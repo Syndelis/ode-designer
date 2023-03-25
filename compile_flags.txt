@@ -1,4 +1,4 @@
---std=c++20
+-std=c++20
 -I./lib/imgui
 -I./lib/imgui/backends
 -I./lib/imnodes
