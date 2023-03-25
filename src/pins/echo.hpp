@@ -9,9 +9,9 @@ public:
     EchoPin(PinType type, Node *parent) : Pin(type, parent) {};
     ~EchoPin() override = default;
 
-    virtual bool acceptsData() { return true; }
+    bool acceptsData() override { return true; }
 
-    virtual void renderContent();
+    void renderContent() override;
 };
 
 #endif

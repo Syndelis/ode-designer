@@ -9,8 +9,8 @@ public:
     GhostPin(PinType type, Node *parent) : Pin(type, parent) {};
     ~GhostPin() override = default;
 
-    virtual void renderContent();
-    virtual void renderPinConnector();
+    void renderContent() override;
+    void renderPinConnector() override;
 
 };
 

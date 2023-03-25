@@ -6,14 +6,15 @@
 
 class SignPin : public EchoPin {
 public:
-    int selected;
+    int selected = 0;
 
-    SignPin(PinType type, Node *parent) : EchoPin(type, parent), selected(0) {};
+    SignPin(PinType type, Node *parent) : EchoPin(type, parent) {};
+    
     ~SignPin() override = default;
 
     const char *getSign();
 
-    virtual void renderContent();
+    void renderContent() override;
 
 };
 

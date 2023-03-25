@@ -12,7 +12,7 @@ public:
     };
      ~NumericPin() override = default;
 
-    virtual void renderContent();
+    void renderContent() override;
 };
 
 #endif

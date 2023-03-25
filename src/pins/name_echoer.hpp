@@ -12,7 +12,7 @@ public:
     };
     ~NameEchoerPin() override = default;
 
-    virtual void renderContent() {};
+    void renderContent() override {};
 
 };
 
