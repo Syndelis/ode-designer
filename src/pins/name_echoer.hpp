@@ -2,6 +2,7 @@
 #define PINS_NAME_ECHOER_H
 
 #include "pin.hpp"
+#include "../nodes/node.hpp"
 
 class NameEchoerPin : public Pin {
 public:

@@ -5,10 +5,9 @@
 #include <variant>
 #include <imnodes.h>
 #include "../core/element.hpp"
-#include "../nodes/node.hpp"
 #include "../common/pin_type.hpp"
 #include <iostream>
-#include <stdio.h>
+#include <cstdio>
 
 enum class PinShape : char {
     Circle=ImNodesPinShape_CircleFilled,
@@ -19,14 +18,14 @@ enum class PinShape : char {
 void pushShapeStyle(PinShape shape);
 void popShapeStyle(PinShape shape);
 
+class Node;
 class Pin;
 
-typedef struct {
+struct LinkedPin {
     Pin *target;
     bool isVisible;
-} LinkedPin;
+};
 
-class Node;
 class Pin : public Element {
 public:
     inline static std::map<ElementID, Pin*> allPins;
