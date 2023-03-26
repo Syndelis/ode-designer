@@ -1,4 +1,5 @@
 #include "echo.hpp"
+
 #include <imgui.h>
 
 #define FMT_HEADER_ONLY
@@ -11,6 +12,6 @@ void EchoPin::renderContent() {
     if (data.index())
         ImGui::TextUnformatted(fmt::format("{}", data).c_str());
 
-    else ImGui::Text("Unattributed");
-
+    else
+        ImGui::Text("Unattributed");
 }

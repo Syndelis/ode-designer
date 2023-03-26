@@ -2,25 +2,33 @@
 #define NODES_NODE_H
 
 #include <imnodes.h>
-#include <vector>
+#include <iostream>
 #include <map>
 #include <string>
-#include <iostream>
-#include "../core/element.hpp"
-#include "../pins/pin.hpp"
+#include <vector>
+
 #include "../common/pin_type.hpp"
+#include "../core/element.hpp"
+
+#include "../pins/pin.hpp"
 
 class Pin;
+
 class Node : public Element {
 public:
 
-    inline static std::map<ElementID, Node*> allNodes;
+    inline static std::map<ElementID, Node *> allNodes;
     std::string name;
-    std::vector<Pin*> inputs;
-    std::vector<Pin*> outputs;
+    std::vector<Pin *> inputs;
+    std::vector<Pin *> outputs;
 
-    virtual inline unsigned int getColor() { return IM_COL32(127, 127, 127, 255); }
-    virtual inline unsigned int getHighlitColor() { return IM_COL32(255, 255, 255, 255); }
+    virtual inline unsigned int getColor() {
+        return IM_COL32(127, 127, 127, 255);
+    }
+
+    virtual inline unsigned int getHighlitColor() {
+        return IM_COL32(255, 255, 255, 255);
+    }
 
     Node(char *name);
     ~Node() override;
@@ -28,6 +36,7 @@ public:
     virtual void process();
     virtual bool onPinLinked(Pin *thisPin, Node *otherNode);
     virtual void onPinUnlinked(Pin *thisPin, Node *otherNode);
+
     virtual Pin *getNextAvailablePin(PinType type) {
         switch (type) {
             case PinType::Input:
@@ -40,12 +49,14 @@ public:
         }
     }
 
-    template<class T> T *pushInput() {
+    template <class T>
+    T *pushInput() {
         inputs.push_back(new T(PinType::Input, this));
         return (T *)inputs.back();
     }
 
-    template<class T> T *pushOutput() {
+    template <class T>
+    T *pushOutput() {
         outputs.push_back(new T(PinType::Output, this));
         return (T *)outputs.back();
     }

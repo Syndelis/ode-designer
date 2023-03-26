@@ -11,7 +11,6 @@ public:
 
     void renderContent() override;
     void renderPinConnector() override;
-
 };
 
 #endif

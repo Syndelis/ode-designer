@@ -7,10 +7,12 @@ class NumericPin : public Pin {
 public:
     float value;
 
-    NumericPin(PinType type, Node *parent, float startVal=0) : Pin(type, parent), value(startVal) {
+    NumericPin(PinType type, Node *parent, float startVal = 0)
+        : Pin(type, parent), value(startVal) {
         data = value;
     };
-     ~NumericPin() override = default;
+
+    ~NumericPin() override = default;
 
     void renderContent() override;
 };

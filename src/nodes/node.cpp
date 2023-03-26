@@ -1,20 +1,21 @@
 #include "node.hpp"
+
 #include <imnodes.h>
-#include <vector>
+#include <iostream>
 #include <map>
 #include <string>
-#include <iostream>
+#include <vector>
+
 #include "../core/element.hpp"
+
 #include "../pins/pin.hpp"
 
 Node::Node(char *name) : Element() {
-    this->name = std::string(name);
+    this->name   = std::string(name);
     allNodes[id] = this;
 }
 
-Node::~Node() {
-    allNodes.erase(id);
-}
+Node::~Node() { allNodes.erase(id); }
 
 void Node::renderPins() {
 
@@ -25,7 +26,6 @@ void Node::renderPins() {
     for (auto &output : outputs) {
         output->renderPinConnector();
     }
-
 }
 
 void Node::process() {

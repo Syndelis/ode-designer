@@ -1,19 +1,22 @@
 #include "pin.hpp"
-#include "../common/pin_type.hpp"
-#include <map>
-#include <imnodes.h>
-#include "../core/element.hpp"
-#include "../nodes/node.hpp"
-#include <iostream>
+
 #include <cstdio>
+#include <imnodes.h>
+#include <iostream>
+#include <map>
+
+#include "../common/pin_type.hpp"
+#include "../core/element.hpp"
+
+#include "../nodes/node.hpp"
 
 void Pin::unlink(ElementID linkId) {
     for (auto &[id, pin] : allPins)
         if (pin->linkedTo.count(linkId)) {
-            Pin *otherPin = pin->linkedTo.extract(linkId).mapped().target;
+            Pin *otherPin     = pin->linkedTo.extract(linkId).mapped().target;
             otherPin->canLink = true;
 
-            Node *parent = pin->parent;
+            Node *parent      = pin->parent;
             Node *otherParent = otherPin->parent;
 
             parent->onPinUnlinked(pin, otherParent);
@@ -26,7 +29,7 @@ void Pin::unlink(ElementID linkId) {
 void Pin::linkTogether(ElementID linkId1, ElementID linkId2, bool isVisible) {
     Pin *pin1 = allPins[linkId1];
     Pin *pin2 = allPins[linkId2];
-    
+
     Node *parent1 = pin1->parent;
     Node *parent2 = pin2->parent;
 
@@ -35,7 +38,8 @@ void Pin::linkTogether(ElementID linkId1, ElementID linkId2, bool isVisible) {
     canLink &= parent1->onPinLinked(pin1, parent2);
     canLink &= parent2->onPinLinked(pin2, parent1);
 
-    if (!canLink) return;
+    if (!canLink)
+        return;
 
     switch (pin1->type) {
         case PinType::Input:
@@ -46,21 +50,20 @@ void Pin::linkTogether(ElementID linkId1, ElementID linkId2, bool isVisible) {
             pin1->link(pin2, isVisible);
             break;
     }
-
 }
 
-Pin::Pin(PinType type, Node *parent) : Element(), type(type), parent(parent), canLink(true) {
+Pin::Pin(PinType type, Node *parent)
+    : Element(), type(type), parent(parent), canLink(true) {
     allPins[id] = this;
-    shape = PinShape::Circle;
-    data = false;
+    shape       = PinShape::Circle;
+    data        = false;
 }
 
-Pin::~Pin() {
-    allPins.erase(id);
-}
+Pin::~Pin() { allPins.erase(id); }
 
 void Pin::link(Pin *other, bool isVisible) {
-    linkedTo[getNextId()] = LinkedPin { .target = other, .isVisible = isVisible };
+    linkedTo[getNextId()]
+        = LinkedPin { .target = other, .isVisible = isVisible };
     other->canLink = false;
 
     if (data.index())
@@ -69,7 +72,7 @@ void Pin::link(Pin *other, bool isVisible) {
 
 void Pin::renderLinks() {
     for (auto &[linkId, dstLinkedPin] : linkedTo) {
-        Pin *dstPin = dstLinkedPin.target;
+        Pin *dstPin    = dstLinkedPin.target;
         bool isVisible = dstLinkedPin.isVisible;
 
         if (isVisible)
@@ -93,19 +96,17 @@ void pushShapeStyle(PinShape shape) {
     }
 }
 
-void popShapeStyle(PinShape shape) {
-    ImNodes::PopColorStyle();
-}
+void popShapeStyle(PinShape shape) { ImNodes::PopColorStyle(); }
 
 void Pin::renderPinConnector() {
     pushShapeStyle(shape);
 
     switch (type) {
         case PinType::Input:
-            ImNodes::BeginInputAttribute(id, (ImNodesPinShape) shape ^ canLink);
+            ImNodes::BeginInputAttribute(id, (ImNodesPinShape)shape ^ canLink);
             break;
         case PinType::Output:
-            ImNodes::BeginOutputAttribute(id, (ImNodesPinShape) shape);
+            ImNodes::BeginOutputAttribute(id, (ImNodesPinShape)shape);
             break;
     }
 
@@ -119,6 +120,6 @@ void Pin::renderPinConnector() {
             ImNodes::EndOutputAttribute();
             break;
     }
-    
+
     popShapeStyle(shape);
 }

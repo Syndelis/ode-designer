@@ -11,16 +11,19 @@
 #include <GL/gl.h>
 // clang-format on
 
+#include "style.hpp"
+
 #include <iostream>
+#include <map>
 #include <string>
 #include <vector>
-#include <map>
-#include "style.hpp"
+
+#include "../nodes/combinator.hpp"
+#include "../nodes/node.hpp"
 #include "../nodes/population.hpp"
 #include "../nodes/variable.hpp"
-#include "../nodes/combinator.hpp"
+
 #include "../pins/pin.hpp"
-#include "../nodes/node.hpp"
 
 static bool isContextMenuOpen = false;
 
@@ -31,19 +34,21 @@ static bool isContextMenuOpen = false;
 void minimapHoverCallback(int nodeId, void *userData) {
 
     ImGui::SetTooltip("%s", (Node::allNodes[nodeId])->name.c_str());
-
 }
 
 // Context Menu --------------------------------------------
 
 using NodeFactory = Node *(*)(char *);
 
-#define NODE_ENTRY(name) { #name, createNode<name>}
+#define NODE_ENTRY(name)          \
+    {                             \
+#name, createNode < name> \
+    }
 const int MAX_NODE_NAME_LENGTH = 50;
 
 template <typename T>
 Node *createNode(char *name) {
-    return new T(name);  // NOLINT(cppcoreguidelines-owning-memory)
+    return new T(name); // NOLINT(cppcoreguidelines-owning-memory)
 }
 
 static std::map<std::string, NodeFactory> nodeFactories = {
@@ -52,13 +57,13 @@ static std::map<std::string, NodeFactory> nodeFactories = {
     NODE_ENTRY(Combinator),
 };
 
-static NodeFactory *currentFactory = nullptr;
-static std::string currentNodeName = "";
+static NodeFactory *currentFactory         = nullptr;
+static std::string currentNodeName         = "";
 static char nodeName[MAX_NODE_NAME_LENGTH] = "";
 
 void resetContextMenuState() {
     currentFactory = nullptr;
-    nodeName[0] = '\0';
+    nodeName[0]    = '\0';
 }
 
 void openContextMenu() {
@@ -68,15 +73,15 @@ void openContextMenu() {
 
 void renderContextMenu() {
     if (ImGui::BeginPopupContextItem("Create Node")) {
-        
+
         if (currentFactory) {
             ImGui::Text("New %s", currentNodeName.c_str());
-            if (
-                ImGui::InputText(
+            if (ImGui::InputText(
                     "##nodename", nodeName, MAX_NODE_NAME_LENGTH,
                     ImGuiInputTextFlags_EnterReturnsTrue
-                ) || ImGui::Button("Create")
-            ) {
+                )
+                || ImGui::Button("Create"))
+            {
                 (*currentFactory)(nodeName);
                 isContextMenuOpen = false;
                 resetContextMenuState();
@@ -87,8 +92,8 @@ void renderContextMenu() {
         else
             for (auto &[nodeName, nodeFactory] : nodeFactories)
                 if (ImGui::Selectable(nodeName.c_str())) {
-                    currentFactory = &nodeFactory;
-                    currentNodeName = nodeName;
+                    currentFactory    = &nodeFactory;
+                    currentNodeName   = nodeName;
                     isContextMenuOpen = true;
                 }
 
@@ -127,7 +132,9 @@ void process() {
     for (auto &[srcId, srcPin] : Pin::allPins)
         srcPin->renderLinks();
 
-    ImNodes::MiniMap(.2f, ImNodesMiniMapLocation_BottomRight, minimapHoverCallback, nullptr);
+    ImNodes::MiniMap(
+        .2f, ImNodesMiniMapLocation_BottomRight, minimapHoverCallback, nullptr
+    );
 
     float mouseWheel = ImGui::GetIO().MouseWheel;
 
@@ -149,10 +156,8 @@ void process() {
         Pin::linkTogether(srcId, dstId);
 
     int linkId;
-    if (ImNodes::IsLinkHovered(&linkId)
-        && ImGui::IsMouseClicked(0))
-            Pin::unlink(linkId);
-
+    if (ImNodes::IsLinkHovered(&linkId) && ImGui::IsMouseClicked(0))
+        Pin::unlink(linkId);
 }
 
 /* -----------------------------------------------------------------------------
@@ -177,11 +182,13 @@ int main() {
     // ImGui Setup -----------------------------------------
     IMGUI_CHECKVERSION();
     ImGui::CreateContext();
-    ImGui::GetIO().ConfigFlags |= ImGuiConfigFlags_DockingEnable |\
-    ImGuiConfigFlags_NavEnableKeyboard | ImGuiConfigFlags_NavEnableSetMousePos;
+    ImGui::GetIO().ConfigFlags |= ImGuiConfigFlags_DockingEnable
+                                | ImGuiConfigFlags_NavEnableKeyboard
+                                | ImGuiConfigFlags_NavEnableSetMousePos;
 
     auto io = ImGui::GetIO();
-    auto iosevkaFont = io.Fonts->AddFontFromFileTTF("assets/fonts/Iosevka-regular.ttf", 16);
+    auto iosevkaFont
+        = io.Fonts->AddFontFromFileTTF("assets/fonts/Iosevka-regular.ttf", 16);
     io.FontDefault = iosevkaFont;
 
     setEelStyle(ImGui::GetStyle());
@@ -211,7 +218,8 @@ int main() {
         // Draw Start ---------------------------------------
 
         ImGui::ShowDemoWindow();
-        ImGuiID dock_id = ImGui::DockSpaceOverViewport(ImGui::GetMainViewport(), 0);
+        ImGuiID dock_id
+            = ImGui::DockSpaceOverViewport(ImGui::GetMainViewport(), 0);
         ImGui::SetNextWindowDockID(dock_id, true);
         process();
 
@@ -220,7 +228,7 @@ int main() {
         glFlush();
         ImGui::Render();
         ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
-        
+
         glfwSwapBuffers(window);
         glfwPollEvents();
     }
@@ -236,5 +244,4 @@ int main() {
     glfwTerminate();
 
     return 0;
-
 }

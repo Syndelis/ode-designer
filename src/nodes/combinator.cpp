@@ -1,16 +1,19 @@
 #include "combinator.hpp"
-#include "../pins/pin.hpp"
+
+#include <algorithm>
+#include <imgui.h>
+#include <thread>
+
+#include "../common/imgui_combo.hpp"
+
 #include "../pins/echo.hpp"
 #include "../pins/ghost.hpp"
-#include "../common/imgui_combo.hpp"
-#include <imgui.h>
-#include <algorithm>
-#include <thread>
+#include "../pins/pin.hpp"
 
 #define FMT_HEADER_ONLY
 #include <fmt/std.h>
 
-static const char *options[] = {"*", "/", "+", "-"};
+static const char *options[] = { "*", "/", "+", "-" };
 
 void updateExpression(Combinator *comb) {
 
@@ -23,9 +26,7 @@ void updateExpression(Combinator *comb) {
 
     for (Pin *pin : comb->inputs)
         if (pin->data.index())
-            expression.append(
-                fmt::format("{}{}", pin->data, operation)
-            );
+            expression.append(fmt::format("{}{}", pin->data, operation));
 
     if (expression.length() > 0) {
         expression.pop_back();
@@ -33,11 +34,10 @@ void updateExpression(Combinator *comb) {
     }
 
     comb->expression_pin->setData(expression);
-
 }
 
 void Combinator::updateExpressionInBackground() {
-    std::thread{updateExpression, this}.detach();
+    std::thread { updateExpression, this }.detach();
 }
 
 Combinator::Combinator(char *name) : Node(name), selected(0) {
@@ -58,7 +58,6 @@ void Combinator::renderContent() {
 
     if (prevSelected != selected)
         updateExpressionInBackground();
-
 }
 
 bool Combinator::onPinLinked(Pin *thisPin, Node *otherNode) {
@@ -73,7 +72,7 @@ bool Combinator::onPinLinked(Pin *thisPin, Node *otherNode) {
         // try to make automatic links, since that would bring us to a loop.
         // After all, the other Combinator doesn't need our expression, it
         // is responsible for supplying it to us!
-        if (!dynamic_cast<Combinator*>(otherNode)) {
+        if (!dynamic_cast<Combinator *>(otherNode)) {
             // SAFETY: `otherNode` is guaranteed to always be non-null.
             // TODO: Use reference instead of pointer.
             // NOLINTNEXTLINE(clang-analyzer-core.CallAndMessage)
@@ -85,7 +84,6 @@ bool Combinator::onPinLinked(Pin *thisPin, Node *otherNode) {
     }
 
     return true;
-
 }
 
 void Combinator::onPinUnlinked(Pin *thisPin, Node *otherNode) {
@@ -101,7 +99,5 @@ void Combinator::onPinUnlinked(Pin *thisPin, Node *otherNode) {
         inputs.erase(std::find(inputs.begin(), inputs.end(), thisPin));
 
         updateExpressionInBackground();
-    
     }
-
 }

@@ -8,8 +8,13 @@ public:
     int selected;
     Pin *expression_pin;
 
-    inline unsigned int getColor() override { return IM_COL32(0, 121, 140, 255); }
-    inline unsigned int getHighlitColor() override { return IM_COL32(6, 214, 160, 255); }
+    inline unsigned int getColor() override {
+        return IM_COL32(0, 121, 140, 255);
+    }
+
+    inline unsigned int getHighlitColor() override {
+        return IM_COL32(6, 214, 160, 255);
+    }
 
     Combinator(char *name);
     ~Combinator() override = default;
@@ -18,7 +23,6 @@ public:
     void onPinUnlinked(Pin *thisPin, Node *otherNode) override;
 
     void updateExpressionInBackground();
-
 };
 
 #endif

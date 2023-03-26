@@ -1,8 +1,10 @@
 #include "sign.hpp"
+
 #include <imgui.h>
+
 #include "../common/imgui_combo.hpp"
 
-static const char *options[] = {"+", "-"};
+static const char *options[] = { "+", "-" };
 
 const char *SignPin::getSign() {
     /*
@@ -19,10 +21,11 @@ void SignPin::renderContent() {
 
     // SAFETY: Read previous comment.
     // NOLINTNEXTLINE(cppcoreguidelines-pro-bounds-constant-array-index)
-    IMGUI_COMBO("##signcombo", options, selected, ImGuiComboFlags_NoArrowButton);
+    IMGUI_COMBO(
+        "##signcombo", options, selected, ImGuiComboFlags_NoArrowButton
+    );
 
     ImGui::SameLine();
 
     EchoPin::renderContent();
-
 }
