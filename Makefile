@@ -22,6 +22,7 @@ DEFINE=
 OBJ_DIR=obj
 
 SRC=$(wildcard src/**/*.cpp)
+HEADERS=$(wildcard src/**/*.h*)
 
 SRC_OBJ=$(foreach src,$(SRC),$(OBJ_DIR)/$(notdir $(basename $(src))).o)
 IMGUI_OBJ=$(foreach src,$(IMGUI_SRC),$(OBJ_DIR)/$(notdir $(basename $(src))).o)
@@ -55,4 +56,7 @@ clean:
 	rm $(SRC_OBJ) $(EXE)
 
 lint:
-	clang-tidy $(SRC) -- $(CPP_STD) $(INCLUDE_DIRS) $(LINK_DIRS) $(LINKS) $(DEFINE)
+	clang-tidy $(SRC) $(HEADERS) -- $(CPP_STD) $(INCLUDE_DIRS) $(LINK_DIRS) $(LINKS) $(DEFINE)
+
+format:
+	clang-format -i $(SRC) $(HEADERS)

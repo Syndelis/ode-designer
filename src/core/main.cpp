@@ -2,17 +2,20 @@
     INCLUDES & GLOBALS
 ----------------------------------------------------------------------------- */
 
-#include <iostream>
-#include <string>
-#include <vector>
-#include <map>
+// clang-format off
 #include <imgui.h>
 #include <imnodes.h>
 #include <imgui_impl_glfw.h>
 #include <imgui_impl_opengl3.h>
-#include "style.hpp"
 #include <GLFW/glfw3.h>
 #include <GL/gl.h>
+// clang-format on
+
+#include <iostream>
+#include <string>
+#include <vector>
+#include <map>
+#include "style.hpp"
 #include "../nodes/population.hpp"
 #include "../nodes/variable.hpp"
 #include "../nodes/combinator.hpp"
@@ -128,7 +131,7 @@ void process() {
 
     float mouseWheel = ImGui::GetIO().MouseWheel;
 
-    if (mouseWheel && ImNodes::IsEditorHovered())  // NOLINT(cppcoreguidelines-narrowing-conversions)
+    if (mouseWheel != 0.0f && ImNodes::IsEditorHovered())
         ImNodes::EditorContextSmoothZoom(
             ImNodes::EditorContextGetZoom() + mouseWheel * .5f,
             ImGui::GetMousePos()
@@ -189,12 +192,14 @@ int main() {
 
     // Application Setup -----------------------------------
 
+    // clang-format off
     new Population("A");  // NOLINT(clang-diagnostic-writable-strings, clang-analyzer-cplusplus.NewDeleteLeaks)
     new Population("B");  // NOLINT(clang-diagnostic-writable-strings, clang-analyzer-cplusplus.NewDeleteLeaks)
     new Population("C");  // NOLINT(clang-diagnostic-writable-strings, clang-analyzer-cplusplus.NewDeleteLeaks)
 
     new Combinator("ab");  // NOLINT(clang-diagnostic-writable-strings, clang-analyzer-cplusplus.NewDeleteLeaks)
     new Combinator("abc");  // NOLINT(clang-diagnostic-writable-strings, clang-analyzer-cplusplus.NewDeleteLeaks)
+    // clang-format on
 
     // Main Loop -------------------------------------------
     while (!glfwWindowShouldClose(window)) {

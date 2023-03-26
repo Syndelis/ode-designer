@@ -15,10 +15,14 @@ static const char *options[] = {"*", "/", "+", "-"};
 void updateExpression(Combinator *comb) {
 
     std::string expression = "(";
-    const char *operation = options[comb->selected]; // NOLINT(cppcoreguidelines-pro-bounds-constant-array-index)
+
+    // SAFETY: `selected` is populated solely via ImGui using `options` as the
+    // source of truth. Therefore, it is guaranteed to be within its bounds.
+    // NOLINTNEXTLINE(cppcoreguidelines-pro-bounds-constant-array-index)
+    const char *operation = options[comb->selected];
 
     for (Pin *pin : comb->inputs)
-        if (pin->data.index()) // This line guarantees only initialized objects are used
+        if (pin->data.index())
             expression.append(
                 fmt::format("{}{}", pin->data, operation)
             );
@@ -47,7 +51,10 @@ void Combinator::renderContent() {
 
     ImGui::Text("Opeartion: ");
     ImGui::SameLine();
-    IMGUI_COMBO("##operationcombo", options, selected, 0);  // NOLINT(cppcoreguidelines-pro-bounds-constant-array-index)
+
+    // SAFETY: Read previous comment.
+    // NOLINTNEXTLINE(cppcoreguidelines-pro-bounds-constant-array-index)
+    IMGUI_COMBO("##operationcombo", options, selected, 0);
 
     if (prevSelected != selected)
         updateExpressionInBackground();
@@ -67,7 +74,10 @@ bool Combinator::onPinLinked(Pin *thisPin, Node *otherNode) {
         // After all, the other Combinator doesn't need our expression, it
         // is responsible for supplying it to us!
         if (!dynamic_cast<Combinator*>(otherNode)) {
-            Pin *otherPin = otherNode->getNextAvailablePin(PinType::Input);  // NOLINT(clang-analyzer-core.CallAndMessage)
+            // SAFETY: `otherNode` is guaranteed to always be non-null.
+            // TODO: Use reference instead of pointer.
+            // NOLINTNEXTLINE(clang-analyzer-core.CallAndMessage)
+            Pin *otherPin = otherNode->getNextAvailablePin(PinType::Input);
             Pin::linkTogether(expression_pin->id, otherPin->id, false);
         }
 

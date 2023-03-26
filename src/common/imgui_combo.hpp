@@ -1,6 +1,7 @@
 #ifndef IMGUI_COMBO_H
 #define IMGUI_COMBO_H
 
+// clang-format off
 #define IMGUI_COMBO(name, items, selected_idx, flags) \
     if (\
         ImGui::BeginCombo(name, items[selected_idx], flags) \
@@ -14,5 +15,6 @@
         }\
         ImGui::EndCombo();\
     }
+// clang-format on
 
 #endif
