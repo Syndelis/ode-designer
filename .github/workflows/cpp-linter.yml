@@ -23,7 +23,7 @@ jobs:
           style: file
           tidy-checks: ''
           version: 15
-          lines-changed-only: true
+          lines-changed-only: false
           files-changed-only: true
           ignore: 'lib'
           thread-comments: false
