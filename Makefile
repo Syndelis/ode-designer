@@ -60,3 +60,9 @@ lint:
 
 format:
 	clang-format -i $(SRC) $(HEADERS)
+
+check-format:
+	clang-format -i $(SRC) $(HEADERS) --dry-run -Werror
+
+enable-git-hooks:
+	git config --local include.path ./.gitconfig
