@@ -23,9 +23,16 @@ jobs:
           style: file
           tidy-checks: ''
           version: 15
-          lines-changed-only: false
-          files-changed-only: false
-          ignore: 'lib|assets|.github|.githooks|.vscode'
+          lines-changed-only: true
+          files-changed-only: true
+          ignore: 'lib'
           thread-comments: false
           file-annotations: true
           extra-args: '-std=c++20'
+
+      - name: Output format suggested changes
+        if: steps.linter.outputs.checks-failed > 0
+        run: |
+          echo "The following changes are suggested by the linter:"
+          make check-format
+          exit 1
