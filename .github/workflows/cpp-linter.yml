@@ -30,9 +30,12 @@ jobs:
           file-annotations: true
           extra-args: '-std=c++20'
 
-      - name: Output format suggested changes
+      - name: Output possible formatting suggestions
         if: steps.linter.outputs.checks-failed > 0
         run: |
           echo "The following changes are suggested by the linter:"
           make check-format
-          exit 1
+          if [ $? -ne 0 ]; then
+            echo "Please run 'make format' and commit the changes."
+            exit 1
+          fi
