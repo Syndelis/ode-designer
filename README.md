@@ -12,7 +12,7 @@ Siga os passos abaixo para conseguir clonar, buildar e desenvolver no projeto.
 <summary><b>🐧 Para Debian/Ubuntu/Pop_OS!/ElementaryOS</b></summary>
 
 ```sh
-$ sudo apt install build-essential cmake
+$ sudo apt install build-essential cmake clang clang-format clang-tidy clangd
 $ case $XDG_SESSION_TYPE in
     x11) sudo apt install xorg-dev ;;
     wayland) sudo apt install libwayland-dev libxkbcommon-dev wayland-protocols extra-cmake-modules;;
@@ -25,7 +25,7 @@ esac
 <summary><b>🐧 Para ArchLinux</b></summary>
 
 ```sh
-$ sudo pacman -S gcc make cmake
+$ sudo pacman -S gcc make cmake clang
 $ case $XDG_SESSION_TYPE in
     x11) sudo pacman -S libx11 ;;
     wayland) sudo pacman -S wayland ;;
