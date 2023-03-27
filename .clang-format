@@ -226,3 +226,7 @@ WhitespaceSensitiveMacros:
   - CF_SWIFT_NAME
 ...
 
+# clang-format 16 --------------------------------------------------------------
+# InsertNewlineAtEOF: true
+# LineEnding: LF
+# RemoveSemicolon: true
