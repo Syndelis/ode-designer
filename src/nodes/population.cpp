@@ -1,17 +1,18 @@
-#include "population.h"
-#include "../pins/echo.h"
-#include "../pins/sign.h"
-#include "../pins/name_echoer.h"
-#include "../nodes/node.h"
-#include <imnodes.h>
+#include "population.hpp"
+
 #include <algorithm>
+#include <imnodes.h>
+
+#include "../nodes/node.hpp"
+
+#include "../pins/echo.hpp"
+#include "../pins/name_echoer.hpp"
+#include "../pins/sign.hpp"
 
 Population::Population(char *name) : Node(name) {
     name_echoer = pushOutput<NameEchoerPin>();
     pushInput<SignPin>();
 }
-
-Population::~Population() {}
 
 void Population::renderContent() {}
 
@@ -24,12 +25,10 @@ bool Population::onPinLinked(Pin *thisPin, Node *otherNode) {
         pushInput<SignPin>();
 
     return true;
-
 }
 
 void Population::onPinUnlinked(Pin *thisPin, Node *otherNode) {
 
     if (thisPin->type == PinType::Input)
         inputs.erase(std::find(inputs.begin(), inputs.end(), thisPin));
-
 }

@@ -3,7 +3,7 @@
   "configurations": [
     {
       "name": "Launch with Debugger",
-      "type": "cppdbg",
+      "type": "lldb",
       "request": "launch",
       "program": "${workspaceFolder}/main",
       "args": [],
@@ -24,7 +24,7 @@
     },
     {
       "name": "Attach debugger",
-      "type": "cppdbg",
+      "type": "lldb",
       "request": "attach",
       "program": "${workspaceFolder}/main",
       "processId": "${command:pickProcess}",

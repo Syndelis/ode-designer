@@ -1,7 +1,9 @@
 #ifndef PINS_NAME_ECHOER_H
 #define PINS_NAME_ECHOER_H
 
-#include "pin.h"
+#include "pin.hpp"
+
+#include "../nodes/node.hpp"
 
 class NameEchoerPin : public Pin {
 public:
@@ -9,10 +11,10 @@ public:
     NameEchoerPin(PinType type, Node *parent) : Pin(type, parent) {
         setData(parent->name);
     };
-    virtual ~NameEchoerPin() {};
 
-    virtual void renderContent() {};
+    ~NameEchoerPin() override = default;
 
+    void renderContent() override {};
 };
 
 #endif

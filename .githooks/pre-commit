@@ -1,0 +1,19 @@
+#!/bin/sh
+
+UNSTAGED_CHANGES_FROM_STAGED_FILES=$(git status | awk 'NF' | sort | uniq --count --repeated)
+
+if ! make check-format; then
+    make format
+    echo -e "\033[4;31m[pre-commit]\033[m Reformatted your code. Please review and \033[1mcommit again.\033[m"
+    exit 1
+elif [ -n "$UNSTAGED_CHANGES_FROM_STAGED_FILES" ];  then
+    echo -e "\033[4;31m[pre-commit]\033[m The following files (probably formatted) have unstaged changes:"
+    echo "$UNSTAGED_CHANGES_FROM_STAGED_FILES"
+    echo ""
+    echo -e "\033[4;31m[pre-commit]\033[m Please \033[1;madd\033[m them and try again."
+    exit 1
+fi
+
+# CHECK IF STAGED FILES HAVE UNSTAGED CHANGES
+# git status | awk 'NF' | sort | uniq --count --repeated
+# > RETURNS A LINE FOR EACH STAGED FILE WITH UNSTAGED CHANGES

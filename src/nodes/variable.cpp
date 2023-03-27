@@ -1,20 +1,17 @@
-#include "variable.h"
-#include "../pins/numeric.h"
+#include "variable.hpp"
+
 #include <imnodes.h>
 #include <iostream>
 
-Variable::Variable(char *name) : Node(name) {
-    pushOutput<NumericPin>();
-}
+#include "../pins/numeric.hpp"
 
-Variable::~Variable() {}
+Variable::Variable(char *name) : Node(name) { pushOutput<NumericPin>(); }
 
 void Variable::renderContent() {
     if (ImGui::Checkbox("Range?", &is_range)) {
 
         range_min = 0;
         range_max = 0;
-
     }
 
     ImGui::BeginDisabled(!is_range);

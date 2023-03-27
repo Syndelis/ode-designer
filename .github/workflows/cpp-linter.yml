@@ -1,0 +1,41 @@
+name: Check Linting, Formatting and Annotate Files
+
+on:
+  pull_request:
+    branches:
+      - '**'
+
+jobs:
+  cpp-linter:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v3
+        with:
+          submodules: true
+      
+      - name: Lint and Format
+        uses: cpp-linter/cpp-linter-action@v2
+        id: linter
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          style: file
+          tidy-checks: ''
+          version: 15
+          lines-changed-only: false
+          files-changed-only: true
+          ignore: 'lib'
+          thread-comments: false
+          file-annotations: true
+          extra-args: '-std=c++20'
+
+      - name: Output possible formatting suggestions
+        if: steps.linter.outputs.checks-failed > 0
+        run: |
+          echo "The following changes are suggested by the linter:"
+          make check-format
+          if [ $? -ne 0 ]; then
+            echo "Please run 'make format' and commit the changes."
+            exit 1
+          fi

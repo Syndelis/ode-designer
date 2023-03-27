@@ -1,17 +1,16 @@
 #ifndef PINS_GHOST_H
 #define PINS_GHOST_H
 
-#include "pin.h"
+#include "pin.hpp"
 
 class GhostPin : public Pin {
 public:
 
     GhostPin(PinType type, Node *parent) : Pin(type, parent) {};
-    virtual ~GhostPin() {};
+    ~GhostPin() override = default;
 
-    virtual void renderContent();
-    virtual void renderPinConnector();
-
+    void renderContent() override;
+    void renderPinConnector() override;
 };
 
 #endif

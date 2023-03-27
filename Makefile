@@ -1,4 +1,5 @@
-CC=g++ -std=c++20
+CPP_STD=-std=c++20
+CC=g++ $(CPP_STD)
 CFLAGS=-g
 CFLAGS_LIB=-c
 
@@ -19,8 +20,14 @@ LINKS=-lGL -lm -ldl -pthread
 DEFINE=
 
 OBJ_DIR=obj
-SRC=$(wildcard src/**/*.cpp) $(IMGUI_SRC)
-OBJ=$(foreach src,$(SRC),$(OBJ_DIR)/$(notdir $(basename $(src))).o)
+
+SRC=$(wildcard src/**/*.cpp)
+HEADERS=$(wildcard src/**/*.h*)
+
+SRC_OBJ=$(foreach src,$(SRC),$(OBJ_DIR)/$(notdir $(basename $(src))).o)
+IMGUI_OBJ=$(foreach src,$(IMGUI_SRC),$(OBJ_DIR)/$(notdir $(basename $(src))).o)
+OBJ=$(SRC_OBJ) $(IMGUI_OBJ)
+
 EXE=main
 
 VPATH=$(wildcard src/*) $(IMGUI_SRC_PATH) $(dir GLFW_LIB)
@@ -43,7 +50,19 @@ $(OBJ): $(OBJ_DIR)/%.o: %.cpp
 	$(CC) $(CFLAGS) $(CFLAGS_LIB) $< -o $@ $(INCLUDE_DIRS) $(LINK_DIRS) $(LINKS) $(DEFINE)
 
 full-clean: clean
-	rm -rf $(GLFW_BUILD_DIR)
+	rm -rf $(OBJ_DIR) $(GLFW_BUILD_DIR)
 
 clean:
-	rm -rf $(OBJ_DIR) $(EXE)
+	rm $(SRC_OBJ) $(EXE)
+
+lint:
+	clang-tidy $(SRC) $(HEADERS) -- $(CPP_STD) $(INCLUDE_DIRS) $(LINK_DIRS) $(LINKS) $(DEFINE)
+
+format:
+	clang-format -i $(SRC) $(HEADERS)
+
+check-format:
+	clang-format -i $(SRC) $(HEADERS) --dry-run -Werror
+
+enable-git-hooks:
+	git config --local include.path ./.gitconfig

@@ -3,7 +3,7 @@
 
 #include <string>
 
-typedef unsigned int ElementID;
+using ElementID         = int;
 static ElementID nextId = 1;
 
 class Element {
@@ -12,8 +12,10 @@ public:
 
     static ElementID getNextId() { return nextId++; }
 
-    Element(): id(nextId++) {}
-    virtual ~Element() {}
+    Element() : id(nextId++) {}
+
+    virtual ~Element() = default;
+
     virtual void renderContent() {}
 };
 
