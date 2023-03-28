@@ -15,7 +15,7 @@ jobs:
           submodules: true
       
       - name: Lint and Format
-        uses: cpp-linter/cpp-linter-action@v2
+        uses: Syndelis/cpp-linter-cached-action@main
         id: linter
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
