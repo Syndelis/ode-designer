@@ -1,6 +1,6 @@
 #include "pin.hpp"
 
-#include <cstdio>
+#include <stdio.h>
 #include <imnodes.h>
 #include <iostream>
 #include <map>
@@ -10,7 +10,10 @@
 
 #include "../nodes/node.hpp"
 
-void Pin::unlink(ElementID linkId) {
+void Pin::unlink(ElementID linkId)
+
+
+{
     for (auto &[id, pin] : allPins)
         if (pin->linkedTo.count(linkId)) {
             Pin *otherPin     = pin->linkedTo.extract(linkId).mapped().target;
