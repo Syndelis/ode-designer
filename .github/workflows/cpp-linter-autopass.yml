@@ -1,0 +1,16 @@
+name: Check Linting, Formatting and Annotate Files
+
+on:
+  pull_request:
+    branches:
+      - '**'
+    
+    paths-ignore:
+      - 'src/**/*.cpp'
+      - 'src/**/*.hpp'
+
+jobs:
+  cpp-linter:
+    runs-on: ubuntu-latest
+    steps:
+      - run: echo "No changes to C++ files, skipping linter."
