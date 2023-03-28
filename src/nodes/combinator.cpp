@@ -24,7 +24,7 @@ void updateExpression(Combinator *comb) {
     // NOLINTNEXTLINE(cppcoreguidelines-pro-bounds-constant-array-index)
     const char *operation = options[comb->selected];
 
-    for (Pin *pin : comb->inputs)
+    for (Pin *pin : comb->inputs) {
         if (pin->data.index())
             expression.append(fmt::format("{}{}", pin->data, operation));
 

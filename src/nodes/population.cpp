@@ -9,12 +9,16 @@
 #include "../pins/name_echoer.hpp"
 #include "../pins/sign.hpp"
 
-Population::Population(char *name) : Node(name) {
+Population::Population(char *name) : Node(name), value(0) {
     name_echoer = pushOutput<NameEchoerPin>();
     pushInput<SignPin>();
 }
 
-void Population::renderContent() {}
+Population::~Population() {}
+
+void Population::renderContent() {
+    ImGui::InputFloat("##Scale", &value);
+}
 
 bool Population::onPinLinked(Pin *thisPin, Node *otherNode) {
 
