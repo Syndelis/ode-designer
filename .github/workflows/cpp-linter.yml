@@ -4,6 +4,10 @@ on:
   pull_request:
     branches:
       - '**'
+    
+    paths:
+      - 'src/**/*.cpp'
+      - 'src/**/*.hpp'
 
 jobs:
   cpp-linter:
