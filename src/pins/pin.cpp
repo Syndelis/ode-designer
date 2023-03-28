@@ -60,7 +60,7 @@ Pin::~Pin() {
 }
 
 void Pin::link(Pin *other, bool isVisible) {
-    linkedTo[getNextId()] = LinkedPin { target: other, isVisible: isVisible };
+    linkedTo[getNextId()] = LinkedPin { .target = other, .isVisible = isVisible };
     other->canLink = false;
 
     if (data.index())

@@ -3,17 +3,20 @@
 #include "../pins/sign.h"
 #include "../pins/name_echoer.h"
 #include "../nodes/node.h"
+#include "imgui.h"
 #include <imnodes.h>
 #include <algorithm>
 
-Population::Population(char *name) : Node(name) {
+Population::Population(char *name) : Node(name), value(0) {
     name_echoer = pushOutput<NameEchoerPin>();
     pushInput<SignPin>();
 }
 
 Population::~Population() {}
 
-void Population::renderContent() {}
+void Population::renderContent() {
+    ImGui::InputFloat("##Scale", &value);
+}
 
 bool Population::onPinLinked(Pin *thisPin, Node *otherNode) {
 

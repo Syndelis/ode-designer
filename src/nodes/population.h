@@ -18,6 +18,9 @@ public:
     virtual bool onPinLinked(Pin *thisPin, Node *otherNode);
     virtual void onPinUnlinked(Pin *thisPin, Node *otherNode);
 
+    // Variable
+    float value;
+
 };
 
 #endif

@@ -17,11 +17,12 @@ void updateExpression(Combinator *comb) {
     std::string expression = "(";
     const char *operation = options[comb->selected];
 
-    for (Pin *pin : comb->inputs)
+    for (Pin *pin : comb->inputs) {
         if (pin->data.index())
             expression\
                 .append(fmt::format("{}", pin->data))\
                 .append(operation);
+    }
 
     if (expression.length() > 0) {
         expression.pop_back();
