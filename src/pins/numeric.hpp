@@ -1,5 +1,5 @@
-#ifndef PINS_NUMERIC_H
-#define PINS_NUMERIC_H
+#ifndef PINS_NUMERIC_HPP
+#define PINS_NUMERIC_HPP
 
 #include "pin.hpp"
 

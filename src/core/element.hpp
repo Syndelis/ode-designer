@@ -1,5 +1,5 @@
-#ifndef ELEMENT_H
-#define ELEMENT_H
+#ifndef ELEMENT_HPP
+#define ELEMENT_HPP
 
 #include <string>
 

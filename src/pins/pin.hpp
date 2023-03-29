@@ -1,5 +1,5 @@
-#ifndef PINS_PIN_H
-#define PINS_PIN_H
+#ifndef PINS_PIN_HPP
+#define PINS_PIN_HPP
 
 #include <cstdio>
 #include <imnodes.h>

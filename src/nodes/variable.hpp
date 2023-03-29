@@ -1,5 +1,5 @@
-#ifndef NODES_INITIAL_H
-#define NODES_INITIAL_H
+#ifndef NODES_INITIAL_HPP
+#define NODES_INITIAL_HPP
 
 #include "node.hpp"
 

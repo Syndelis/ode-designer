@@ -1,5 +1,5 @@
-#ifndef NODES_NODE_H
-#define NODES_NODE_H
+#ifndef NODES_NODE_HPP
+#define NODES_NODE_HPP
 
 #include <imnodes.h>
 #include <iostream>

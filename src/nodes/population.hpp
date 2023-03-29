@@ -1,5 +1,5 @@
-#ifndef NODES_POPULATION_H
-#define NODES_POPULATION_H
+#ifndef NODES_POPULATION_HPP
+#define NODES_POPULATION_HPP
 
 #include "node.hpp"
 

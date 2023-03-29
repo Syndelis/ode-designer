@@ -1,5 +1,5 @@
-#ifndef IMGUI_COMBO_H
-#define IMGUI_COMBO_H
+#ifndef IMGUI_COMBO_HPP
+#define IMGUI_COMBO_HPP
 
 // clang-format off
 #define IMGUI_COMBO(name, items, selected_idx, flags) \
