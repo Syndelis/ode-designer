@@ -14,7 +14,12 @@ GLFW_LIB=$(GLFW_BUILD_DIR)/src/libglfw3.a
 
 FMT_INC=lib/fmt/include
 
-INCLUDE_DIRS=-I. $(foreach path,$(IMGUI_SRC_PATH),-I$(path)) -I$(GLFW_SRC)/include -I$(FMT_INC)
+ODEIR_PATH=lib/odeir
+ODEIR_INC=$(ODEIR_PATH)/include
+ODEIR_LIB=$(ODEIR_PATH)/target/debug/libodeir.a
+ODEIR_MANIFEST_FILE=$(ODEIR_PATH)/Cargo.toml
+
+INCLUDE_DIRS=-I. $(foreach path,$(IMGUI_SRC_PATH),-I$(path)) -I$(GLFW_SRC)/include -I$(FMT_INC) -I$(ODEIR_INC)
 LINK_DIRS=
 LINKS=-lGL -lm -ldl -pthread
 DEFINE=
@@ -43,14 +48,18 @@ $(GLFW_LIB):
 $(OBJ_DIR):
 	mkdir -p $@
 
-$(EXE): $(OBJ_DIR) $(OBJ)
-	$(CC) $(CFLAGS) $(OBJ) $(GLFW_LIB) -o $@ $(INCLUDE_DIRS) $(LINK_DIRS) $(LINKS) $(DEFINE)
+$(EXE): $(OBJ_DIR) $(OBJ) $(ODEIR_LIB)
+	$(CC) $(CFLAGS) $(OBJ) $(ODEIR_LIB) $(GLFW_LIB) -o $@ $(INCLUDE_DIRS) $(LINK_DIRS) $(LINKS) $(DEFINE)
 
 $(OBJ): $(OBJ_DIR)/%.o: %.cpp
 	$(CC) $(CFLAGS) $(CFLAGS_LIB) $< -o $@ $(INCLUDE_DIRS) $(LINK_DIRS) $(LINKS) $(DEFINE)
 
+$(ODEIR_LIB):
+	cargo build --manifest-path $(ODEIR_MANIFEST_FILE)
+
 full-clean: clean
 	rm -rf $(OBJ_DIR) $(GLFW_BUILD_DIR)
+	cargo clean --manifest-path $(ODEIR_MANIFEST_FILE)
 
 clean:
 	rm -f $(SRC_OBJ) $(EXE)

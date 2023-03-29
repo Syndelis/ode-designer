@@ -14,3 +14,6 @@
 	path = lib/fmt
 	url = https://github.com/Syndelis/fmt
 	branch = ode-designer
+[submodule "lib/odeir"]
+	path = lib/odeir
+	url = https://github.com/syndelis/odeir
