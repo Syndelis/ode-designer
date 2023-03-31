@@ -1,9 +1,10 @@
-#ifndef NODES_NODE_H
-#define NODES_NODE_H
+#pragma once
 
+#include <exception>
 #include <imnodes.h>
 #include <iostream>
 #include <map>
+#include <unordered_map>
 #include <string>
 #include <vector>
 
@@ -36,6 +37,7 @@ public:
     virtual void process();
     virtual bool onPinLinked(Pin *thisPin, Node *otherNode);
     virtual void onPinUnlinked(Pin *thisPin, Node *otherNode);
+    virtual void onPinData(Pin *thisPin);
 
     virtual Pin *getNextAvailablePin(PinType type) {
         switch (type) {
@@ -47,6 +49,16 @@ public:
                 return outputs[outputs.size() - 1];
                 break;
         }
+    }
+
+    std::vector<Node*> getNodesByName(const char* name) {
+        std::vector<Node*> nodes{};
+        for(auto const& [_, node]: this->allNodes) {
+            if (node->name == name) {
+                nodes.push_back(node);
+            }
+        }
+        return nodes;
     }
 
     template <class T>
@@ -61,5 +73,3 @@ public:
         return (T *)outputs.back();
     }
 };
-
-#endif

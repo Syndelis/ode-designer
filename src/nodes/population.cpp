@@ -10,15 +10,24 @@
 #include "../pins/sign.hpp"
 
 Population::Population(char *name) : Node(name), value(0) {
-    name_echoer = pushOutput<NameEchoerPin>();
+    if (allPopulations.contains(this->name)) {
+        throw new PopulationExistsException(this->name.c_str());
+    }
+    allPopulations[this->name] = this;
+    name_echoer                = pushOutput<NameEchoerPin>();
     pushInput<SignPin>();
 }
 
-Population::~Population() {}
+Population::~Population() { allPopulations.erase(this->name); }
 
-void Population::renderContent() {
-    ImGui::InputFloat("##Scale", &value);
+Population *Population::getByName(const std::string &name) {
+    if (allPopulations.contains(name)) {
+        return allPopulations[name];
+    }
+    return nullptr;
 }
+
+void Population::renderContent() { ImGui::InputFloat("##Scale", &value); }
 
 bool Population::onPinLinked(Pin *thisPin, Node *otherNode) {
 

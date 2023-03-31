@@ -11,6 +11,7 @@
 #include <GL/gl.h>
 // clang-format on
 
+#include "fmt/format.h"
 #include "style.hpp"
 
 #include <iostream>
@@ -18,6 +19,7 @@
 #include <string>
 #include <vector>
 
+#include "../nodes/assigner.hpp"
 #include "../nodes/combinator.hpp"
 #include "../nodes/node.hpp"
 #include "../nodes/population.hpp"
@@ -55,15 +57,18 @@ static std::map<std::string, NodeFactory> nodeFactories = {
     NODE_ENTRY(Population),
     NODE_ENTRY(Variable),
     NODE_ENTRY(Combinator),
+    NODE_ENTRY(Assigner),
 };
 
 static NodeFactory *currentFactory         = nullptr;
+static std::string errorMessage            = "";
 static std::string currentNodeName         = "";
 static char nodeName[MAX_NODE_NAME_LENGTH] = "";
 
 void resetContextMenuState() {
     currentFactory = nullptr;
     nodeName[0]    = '\0';
+    errorMessage   = "";
 }
 
 void openContextMenu() {
@@ -82,10 +87,27 @@ void renderContextMenu() {
                 )
                 || ImGui::Button("Create"))
             {
-                (*currentFactory)(nodeName);
-                isContextMenuOpen = false;
-                resetContextMenuState();
-                ImGui::CloseCurrentPopup();
+                errorMessage = "";
+                try {
+                    (*currentFactory)(nodeName);
+                } catch (PopulationExistsException *e) {
+                    errorMessage
+                        = fmt::format("Population '{}' already exists", e->name);
+                } catch (PopulationNotFoundException *e) {
+                    errorMessage
+                        = fmt::format("Population '{}' does not exist", e->name);
+                }
+                // This executes if there was no error.
+                if (errorMessage.length() == 0) {
+                    isContextMenuOpen = false;
+                    resetContextMenuState();
+                    ImGui::CloseCurrentPopup();
+                }
+            }
+            if (errorMessage.length() != 0) {
+                ImGui::PushStyleColor(ImGuiCol_Text, IM_COL32(0xaa, 0x33, 0x33, 0xff));
+                ImGui::Text("Error: %s", errorMessage.c_str());
+                ImGui::PopStyleColor();
             }
         }
 
@@ -217,7 +239,6 @@ int main() {
 
         // Draw Start ---------------------------------------
 
-        ImGui::ShowDemoWindow();
         ImGuiID dock_id
             = ImGui::DockSpaceOverViewport(ImGui::GetMainViewport(), 0);
         ImGui::SetNextWindowDockID(dock_id, true);

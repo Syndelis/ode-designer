@@ -28,6 +28,8 @@ void Node::renderPins() {
     }
 }
 
+void Node::onPinData(Pin *thisPin) { }
+
 void Node::process() {
 
     unsigned int highlitColor = getHighlitColor();

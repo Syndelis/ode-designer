@@ -19,6 +19,7 @@ public:
     Combinator(char *name);
     ~Combinator() override = default;
     void renderContent() override;
+    void onPinData(Pin *thisPin) override;
     bool onPinLinked(Pin *thisPin, Node *otherNode) override;
     void onPinUnlinked(Pin *thisPin, Node *otherNode) override;
 

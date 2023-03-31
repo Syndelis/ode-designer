@@ -1,5 +1,4 @@
-#ifndef PINS_PIN_H
-#define PINS_PIN_H
+#pragma once
 
 #include <cstdio>
 #include <imnodes.h>
@@ -9,6 +8,7 @@
 
 #include "../common/pin_type.hpp"
 #include "../core/element.hpp"
+#include "../nodes/node.hpp"
 
 enum class PinShape : char {
     Circle   = ImNodesPinShape_CircleFilled,
@@ -49,6 +49,8 @@ public:
     template <typename T>
     void setData(T data) {
         this->data = data;
+        if (this->type == PinType::Input)
+            this->parent->onPinData(this);
         for (auto &[_, linkedPin] : linkedTo) {
             Pin *pin = linkedPin.target;
             pin->trySendData(data);
@@ -70,5 +72,3 @@ public:
 
     virtual void renderPinConnector();
 };
-
-#endif

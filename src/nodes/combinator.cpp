@@ -27,6 +27,7 @@ void updateExpression(Combinator *comb) {
     for (Pin *pin : comb->inputs) {
         if (pin->data.index())
             expression.append(fmt::format("{}{}", pin->data, operation));
+    }
 
     if (expression.length() > 0) {
         expression.pop_back();
@@ -36,7 +37,12 @@ void updateExpression(Combinator *comb) {
     comb->expression_pin->setData(expression);
 }
 
+void Combinator::onPinData(Pin *thisPin) {
+    this->updateExpressionInBackground();
+}
+
 void Combinator::updateExpressionInBackground() {
+    // updateExpression(this);
     std::thread { updateExpression, this }.detach();
 }
 
@@ -76,7 +82,7 @@ bool Combinator::onPinLinked(Pin *thisPin, Node *otherNode) {
             // SAFETY: `otherNode` is guaranteed to always be non-null.
             // TODO: Use reference instead of pointer.
             // NOLINTNEXTLINE(clang-analyzer-core.CallAndMessage)
-            Pin *otherPin = otherNode->getNextAvailablePin(PinType::Input);
+            Pin *otherPin = otherNode->getNextAvailablePin(PinType::Output);
             Pin::linkTogether(expression_pin->id, otherPin->id, false);
         }
 
