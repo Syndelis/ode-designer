@@ -53,7 +53,7 @@ full-clean: clean
 	rm -rf $(OBJ_DIR) $(GLFW_BUILD_DIR)
 
 clean:
-	rm $(SRC_OBJ) $(EXE)
+	rm -f $(SRC_OBJ) $(EXE)
 
 lint:
 	clang-tidy $(SRC) $(HEADERS) -- $(CPP_STD) $(INCLUDE_DIRS) $(LINK_DIRS) $(LINKS) $(DEFINE)
