@@ -34,6 +34,9 @@ static bool isContextMenuOpen = false;
 /* -----------------------------------------------------------------------------
     FUNCTIONS
 ----------------------------------------------------------------------------- */
+//retirar essas funções daqui, criar um header
+static void MenuFile();
+static void MenuEdit();
 
 void minimapHoverCallback(int nodeId, void *userData) {
 
@@ -125,13 +128,24 @@ void process() {
     ImGui::PushStyleColor(ImGuiCol_WindowBg, IM_COL32(40, 40, 50, 200));
     ImGui::Begin("simple node editor");
 
-    renderContextMenu();
+    if(ImGui::BeginMainMenuBar()){
+        if(ImGui::BeginMenu("File")){
+            MenuFile();
+            ImGui::EndMenu();
+        }
+        if(ImGui::BeginMenu("Edit")){
+            MenuEdit();
+            ImGui::EndMenu();
+        }
+        ImGui::EndMainMenuBar();
+    }
 
     if (ImGui::Shortcut(ImGuiMod_Ctrl | ImGuiKey_S)) {
         std::cout << "Ctrl S apertado!" << std::endl;
         serialize();
     }
 
+    renderContextMenu();
     ImNodes::BeginNodeEditor();
 
     if (ImNodes::IsEditorHovered()) {
@@ -182,7 +196,49 @@ void process() {
 /* -----------------------------------------------------------------------------
     MAIN CODE
 ----------------------------------------------------------------------------- */
+static void MenuFile(){
+    
+    if (ImGui::MenuItem("New")){}
+    if (ImGui::MenuItem("Open", "Ctrl+O")) {}
+    if (ImGui::MenuItem("Save", "Ctrl+S")) {}
+    if (ImGui::MenuItem("Save As..")) {}
+}
+static void MenuEdit(){
 
+    if (ImGui::MenuItem("Undo", "CTRL+Z")) {}
+    if (ImGui::MenuItem("Cut", "CTRL+X")) {}
+    if (ImGui::MenuItem("Copy", "CTRL+C")) {}
+    if (ImGui::MenuItem("Paste", "CTRL+V")) {}
+
+    ImGui::Separator();
+
+    if(ImGui::BeginMenu("Generate Code")){
+
+        static float f;
+        ImGui::InputFloat("Start_time", &f);
+        ImGui::InputFloat("Dt", &f);
+        ImGui::InputFloat("tfinal", &f);
+        
+        if(ImGui::BeginMenu("Export_Codes")){
+            if(ImGui::MenuItem("Python")){}
+            if(ImGui::MenuItem("C++")){}
+            if(ImGui::MenuItem("C")){}
+            ImGui::EndMenu();
+
+        }
+        ImGui::EndMenu();
+    }
+    if(ImGui::BeginMenu("Simulate Model")){
+
+        static float f;
+        ImGui::InputFloat("Start_time", &f);
+        ImGui::InputFloat("Dt", &f);
+        ImGui::InputFloat("tfinal", &f);
+        ImGui::Button("Simulate");
+
+        ImGui::EndMenu();
+    }
+}
 int main() {
 
     // GLFW Setup ------------------------------------------
@@ -261,6 +317,8 @@ int main() {
 
     glfwDestroyWindow(window);
     glfwTerminate();
+
+   
 
     return 0;
 }
