@@ -17,3 +17,6 @@
 [submodule "lib/odeir"]
 	path = lib/odeir
 	url = https://github.com/syndelis/odeir
+[submodule "lib/portable-file-dialogs"]
+	path = lib/portable-file-dialogs
+	url = https://github.com/samhocevar/portable-file-dialogs

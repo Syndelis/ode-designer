@@ -15,7 +15,13 @@ Population::Population(char *name) : Node(name) {
     pushInput<SignPin>();
 }
 
-void Population::renderContent() {}
+void Population::renderContent() {
+    float value;
+
+    ImGui::PushItemWidth(100);
+    ImGui::InputFloat("", &value);
+       
+}
 
 bool Population::onPinLinked(Pin *thisPin, Node *otherNode) {
 
