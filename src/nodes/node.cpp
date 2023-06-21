@@ -54,3 +54,15 @@ bool Node::onPinLinked(Pin *thisPin, Node *otherNode) {
 }
 
 void Node::onPinUnlinked(Pin *thisPin, Node *otherNode) {}
+
+Model Node::serializeInto(Model model) {
+    // This method should never be executed, as all subclasses must override it.
+    // However, there appears to be a bug in the compiler that causes it to
+    // complain about this method not being implemented, even though it is
+    // implemented in the subclasses. This is a workaround.
+
+    // Introducing a static_assert to guarantee it's never called doesn't work,
+    // as the compiler seems to be adamant that it is, in fact, being called.    
+
+    return model;
+}

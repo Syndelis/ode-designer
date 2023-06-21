@@ -101,3 +101,14 @@ void Combinator::onPinUnlinked(Pin *thisPin, Node *otherNode) {
         updateExpressionInBackground();
     }
 }
+
+Model Combinator::serializeInto(Model model) {
+
+    auto combState = model
+        .buildNode(id, name)
+        .withOperation(options[selected][0]);
+
+    // TODO: Links
+    return combState;
+    
+}

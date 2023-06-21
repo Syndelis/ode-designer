@@ -22,6 +22,8 @@ public:
     bool onPinLinked(Pin *thisPin, Node *otherNode) override;
     void onPinUnlinked(Pin *thisPin, Node *otherNode) override;
 
+    Model serializeInto(Model model) override;
+
     void updateExpressionInBackground();
 };
 

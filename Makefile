@@ -19,6 +19,9 @@ ODEIR_INC=$(ODEIR_PATH)/include
 ODEIR_LIB=$(ODEIR_PATH)/target/debug/libodeir.a
 ODEIR_MANIFEST_FILE=$(ODEIR_PATH)/Cargo.toml
 
+ODEIR_CPP_PATH=$(ODEIR_PATH)/cpp-src
+ODEIR_CPP_SRC=$(wildcard $(ODEIR_CPP_PATH)/**.cpp)
+
 INCLUDE_DIRS=-I. $(foreach path,$(IMGUI_SRC_PATH),-I$(path)) -I$(GLFW_SRC)/include -I$(FMT_INC) -I$(ODEIR_INC)
 LINK_DIRS=
 LINKS=-lGL -lm -ldl -pthread
@@ -31,11 +34,13 @@ HEADERS=$(wildcard src/**/*.h*)
 
 SRC_OBJ=$(foreach src,$(SRC),$(OBJ_DIR)/$(notdir $(basename $(src))).o)
 IMGUI_OBJ=$(foreach src,$(IMGUI_SRC),$(OBJ_DIR)/$(notdir $(basename $(src))).o)
-OBJ=$(SRC_OBJ) $(IMGUI_OBJ)
+# ODEIR_CPP_OBJ=$(foreach src,$(ODEIR_CPP_SRC),$(OBJ_DIR)/$(notdir $(basename $(src))).o)
+ODEIR_CPP_OBJ=
+OBJ=$(SRC_OBJ) $(IMGUI_OBJ) $(ODEIR_CPP_OBJ)
 
 EXE=main
 
-VPATH=$(wildcard src/*) $(IMGUI_SRC_PATH) $(dir GLFW_LIB)
+VPATH=$(wildcard src/*) $(IMGUI_SRC_PATH) $(ODEIR_CPP_PATH) $(dir GLFW_LIB)
 
 all: $(GLFW_LIB) $(EXE)
 release: all

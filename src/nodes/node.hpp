@@ -6,6 +6,7 @@
 #include <map>
 #include <string>
 #include <vector>
+#include <odeir.hpp>
 
 #include "../common/pin_type.hpp"
 #include "../core/element.hpp"
@@ -48,6 +49,8 @@ public:
                 break;
         }
     }
+
+    virtual Model serializeInto(Model model);
 
     template <class T>
     T *pushInput() {
