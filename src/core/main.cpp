@@ -50,7 +50,8 @@ void serialize() {
 
     for (auto &[id, node] : Node::allNodes)
         model = node->serializeInto(model);
-
+    
+    //Pegar esse serialize em vez de mostrar no terminal, abrir e salvar em um arquivo.
     std::cout << model.toJson() << std::endl;
 }
 
@@ -200,17 +201,13 @@ static void MenuFile(){
     
     if (ImGui::MenuItem("New")){}
     if (ImGui::MenuItem("Open", "Ctrl+O")) {}
-    if (ImGui::MenuItem("Save", "Ctrl+S")) {}
+    if (ImGui::MenuItem("Save", "Ctrl+S")) {
+        serialize();
+    }
     if (ImGui::MenuItem("Save As..")) {}
 }
+
 static void MenuEdit(){
-
-    if (ImGui::MenuItem("Undo", "CTRL+Z")) {}
-    if (ImGui::MenuItem("Cut", "CTRL+X")) {}
-    if (ImGui::MenuItem("Copy", "CTRL+C")) {}
-    if (ImGui::MenuItem("Paste", "CTRL+V")) {}
-
-    ImGui::Separator();
 
     if(ImGui::BeginMenu("Generate Code")){
 
@@ -239,6 +236,7 @@ static void MenuEdit(){
         ImGui::EndMenu();
     }
 }
+
 int main() {
 
     // GLFW Setup ------------------------------------------
@@ -317,8 +315,6 @@ int main() {
 
     glfwDestroyWindow(window);
     glfwTerminate();
-
-   
 
     return 0;
 }
