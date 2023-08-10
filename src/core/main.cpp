@@ -3,6 +3,8 @@
 ----------------------------------------------------------------------------- */
 
 // clang-format off
+#define IMGUI_DEFINE_MATH_OPERATORS
+#include <imgui_internal.h>
 #include <imgui.h>
 #include <imnodes.h>
 #include <imgui_impl_glfw.h>
@@ -17,11 +19,13 @@
 #include <map>
 #include <string>
 #include <vector>
+#define ODEIR_DEFINITION
+#include <odeir.hpp>
+#undef ODEIR_DEFINITION
 
 #include "../nodes/combinator.hpp"
 #include "../nodes/node.hpp"
 #include "../nodes/population.hpp"
-#include "../nodes/variable.hpp"
 
 #include "../pins/pin.hpp"
 
@@ -34,6 +38,16 @@ static bool isContextMenuOpen = false;
 void minimapHoverCallback(int nodeId, void *userData) {
 
     ImGui::SetTooltip("%s", (Node::allNodes[nodeId])->name.c_str());
+}
+
+void serialize() {
+
+    Model model = ModelBuilder<InitialState>().setMetadata(0, 0, 0);
+
+    for (auto &[id, node] : Node::allNodes)
+        model = node->serializeInto(model);
+
+    std::cout << model.toJson() << std::endl;
 }
 
 // Context Menu --------------------------------------------
@@ -53,7 +67,6 @@ Node *createNode(char *name) {
 
 static std::map<std::string, NodeFactory> nodeFactories = {
     NODE_ENTRY(Population),
-    NODE_ENTRY(Variable),
     NODE_ENTRY(Combinator),
 };
 
@@ -112,6 +125,11 @@ void process() {
     ImGui::Begin("simple node editor");
 
     renderContextMenu();
+
+    if (ImGui::Shortcut(ImGuiMod_Ctrl | ImGuiKey_S)) {
+        std::cout << "Ctrl S apertado!" << std::endl;
+        serialize();
+    }
 
     ImNodes::BeginNodeEditor();
 

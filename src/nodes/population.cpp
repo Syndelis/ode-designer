@@ -2,6 +2,7 @@
 
 #include <algorithm>
 #include <imnodes.h>
+#include <odeir.hpp>
 
 #include "../nodes/node.hpp"
 
@@ -31,4 +32,25 @@ void Population::onPinUnlinked(Pin *thisPin, Node *otherNode) {
 
     if (thisPin->type == PinType::Input)
         inputs.erase(std::find(inputs.begin(), inputs.end(), thisPin));
+}
+
+Model Population::serializeInto(Model model) {
+
+    auto popState = model.buildNode(id, name).withRelatedConstant("TODO!");
+
+    if (name_echoer->linkedTo.empty())
+        return popState;
+
+    std::vector<ElementID> keys;
+
+    for (auto &[id, pin] : name_echoer->linkedTo)
+        keys.push_back(id);
+
+    // TODO: Sign
+    auto linkState = popState.addLink(keys[0], '+');
+
+    for (int i = 1; i < keys.size(); i++)
+        linkState = linkState.addLink(keys[i], '+');
+
+    return linkState;
 }

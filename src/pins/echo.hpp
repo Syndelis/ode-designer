@@ -1,5 +1,5 @@
-#ifndef PINS_ECHO_H
-#define PINS_ECHO_H
+#ifndef PINS_ECHO_HPP
+#define PINS_ECHO_HPP
 
 #include "pin.hpp"
 

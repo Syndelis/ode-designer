@@ -1,5 +1,5 @@
-#ifndef PINS_NAME_ECHOER_H
-#define PINS_NAME_ECHOER_H
+#ifndef PINS_NAME_ECHOER_HPP
+#define PINS_NAME_ECHOER_HPP
 
 #include "pin.hpp"
 

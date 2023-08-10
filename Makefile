@@ -14,7 +14,15 @@ GLFW_LIB=$(GLFW_BUILD_DIR)/src/libglfw3.a
 
 FMT_INC=lib/fmt/include
 
-INCLUDE_DIRS=-I. $(foreach path,$(IMGUI_SRC_PATH),-I$(path)) -I$(GLFW_SRC)/include -I$(FMT_INC)
+ODEIR_PATH=lib/odeir
+ODEIR_INC=$(ODEIR_PATH)/include
+ODEIR_LIB=$(ODEIR_PATH)/target/debug/libodeir.a
+ODEIR_MANIFEST_FILE=$(ODEIR_PATH)/Cargo.toml
+
+ODEIR_CPP_PATH=$(ODEIR_PATH)/cpp-src
+ODEIR_CPP_SRC=$(wildcard $(ODEIR_CPP_PATH)/**.cpp)
+
+INCLUDE_DIRS=-I. $(foreach path,$(IMGUI_SRC_PATH),-I$(path)) -I$(GLFW_SRC)/include -I$(FMT_INC) -I$(ODEIR_INC)
 LINK_DIRS=
 LINKS=-lGL -lm -ldl -pthread
 DEFINE=
@@ -26,11 +34,13 @@ HEADERS=$(wildcard src/**/*.h*)
 
 SRC_OBJ=$(foreach src,$(SRC),$(OBJ_DIR)/$(notdir $(basename $(src))).o)
 IMGUI_OBJ=$(foreach src,$(IMGUI_SRC),$(OBJ_DIR)/$(notdir $(basename $(src))).o)
-OBJ=$(SRC_OBJ) $(IMGUI_OBJ)
+# ODEIR_CPP_OBJ=$(foreach src,$(ODEIR_CPP_SRC),$(OBJ_DIR)/$(notdir $(basename $(src))).o)
+ODEIR_CPP_OBJ=
+OBJ=$(SRC_OBJ) $(IMGUI_OBJ) $(ODEIR_CPP_OBJ)
 
 EXE=main
 
-VPATH=$(wildcard src/*) $(IMGUI_SRC_PATH) $(dir GLFW_LIB)
+VPATH=$(wildcard src/*) $(IMGUI_SRC_PATH) $(ODEIR_CPP_PATH) $(dir GLFW_LIB)
 
 all: $(GLFW_LIB) $(EXE)
 release: all
@@ -43,14 +53,18 @@ $(GLFW_LIB):
 $(OBJ_DIR):
 	mkdir -p $@
 
-$(EXE): $(OBJ_DIR) $(OBJ)
-	$(CC) $(CFLAGS) $(OBJ) $(GLFW_LIB) -o $@ $(INCLUDE_DIRS) $(LINK_DIRS) $(LINKS) $(DEFINE)
+$(EXE): $(OBJ_DIR) $(OBJ) $(ODEIR_LIB)
+	$(CC) $(CFLAGS) $(OBJ) $(ODEIR_LIB) $(GLFW_LIB) -o $@ $(INCLUDE_DIRS) $(LINK_DIRS) $(LINKS) $(DEFINE)
 
 $(OBJ): $(OBJ_DIR)/%.o: %.cpp
 	$(CC) $(CFLAGS) $(CFLAGS_LIB) $< -o $@ $(INCLUDE_DIRS) $(LINK_DIRS) $(LINKS) $(DEFINE)
 
+$(ODEIR_LIB):
+	cargo build --manifest-path $(ODEIR_MANIFEST_FILE)
+
 full-clean: clean
 	rm -rf $(OBJ_DIR) $(GLFW_BUILD_DIR)
+	cargo clean --manifest-path $(ODEIR_MANIFEST_FILE)
 
 clean:
 	rm -f $(SRC_OBJ) $(EXE)

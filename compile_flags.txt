@@ -11,3 +11,4 @@
 -I./lib/imnodes
 -I./lib/glfw/include
 -I./lib/fmt/include
+-I./lib/odeir/include

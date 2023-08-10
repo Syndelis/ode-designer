@@ -1,5 +1,5 @@
-#ifndef CONF_H
-#define CONF_H
+#ifndef CONF_HPP
+#define CONF_HPP
 
 #include "imgui.h"
 void setNodableStyle(ImGuiStyle &_style);

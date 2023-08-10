@@ -1,5 +1,5 @@
-#ifndef NODES_COMBINATOR_H
-#define NODES_COMBINATOR_H
+#ifndef NODES_COMBINATOR_HPP
+#define NODES_COMBINATOR_HPP
 
 #include "node.hpp"
 
@@ -21,6 +21,8 @@ public:
     void renderContent() override;
     bool onPinLinked(Pin *thisPin, Node *otherNode) override;
     void onPinUnlinked(Pin *thisPin, Node *otherNode) override;
+
+    Model serializeInto(Model model) override;
 
     void updateExpressionInBackground();
 };

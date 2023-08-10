@@ -1,5 +1,5 @@
-#ifndef PINS_GHOST_H
-#define PINS_GHOST_H
+#ifndef PINS_GHOST_HPP
+#define PINS_GHOST_HPP
 
 #include "pin.hpp"
 
