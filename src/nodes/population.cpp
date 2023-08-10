@@ -36,9 +36,7 @@ void Population::onPinUnlinked(Pin *thisPin, Node *otherNode) {
 
 Model Population::serializeInto(Model model) {
 
-    auto popState = model
-        .buildNode(id, name)
-        .withRelatedConstant("TODO!");
+    auto popState = model.buildNode(id, name).withRelatedConstant("TODO!");
 
     if (name_echoer->linkedTo.empty())
         return popState;
@@ -55,5 +53,4 @@ Model Population::serializeInto(Model model) {
         linkState = linkState.addLink(keys[i], '+');
 
     return linkState;
-    
 }

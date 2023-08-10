@@ -4,9 +4,9 @@
 #include <imnodes.h>
 #include <iostream>
 #include <map>
+#include <odeir.hpp>
 #include <string>
 #include <vector>
-#include <odeir.hpp>
 
 #include "../common/pin_type.hpp"
 #include "../core/element.hpp"

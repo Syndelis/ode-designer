@@ -42,8 +42,7 @@ void minimapHoverCallback(int nodeId, void *userData) {
 
 void serialize() {
 
-    Model model = ModelBuilder<InitialState>()
-        .setMetadata(0, 0, 0);
+    Model model = ModelBuilder<InitialState>().setMetadata(0, 0, 0);
 
     for (auto &[id, node] : Node::allNodes)
         model = node->serializeInto(model);
