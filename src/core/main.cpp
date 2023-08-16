@@ -26,8 +26,9 @@
 #include "../nodes/combinator.hpp"
 #include "../nodes/node.hpp"
 #include "../nodes/population.hpp"
-
 #include "../pins/pin.hpp"
+#include "../portable-file-dialogs/portable-file-dialogs.h"
+
 
 static bool isContextMenuOpen = false;
 
@@ -122,12 +123,32 @@ void renderContextMenu() {
         ImGui::OpenPopup("Create Node");
 }
 
+void test_open_file(){
+    // File open
+    auto f = pfd::open_file("Choose file","~",
+                            { "Files (.json)", "*.json *",
+                              "All Files", "*"},
+                            pfd::opt::none);
+}
+void test_save_file(){
+    // File save
+    auto f = pfd::save_file("Choose file to save",
+                            pfd::path::home() + pfd::path::separator() + "readme.txt",
+                            { "Text Files (.txt .text)", "*.txt *.text" },
+                            pfd::opt::force_overwrite);
+}
+
 void process() {
 
     // Rendering -------------------------------------------
 
     ImGui::PushStyleColor(ImGuiCol_WindowBg, IM_COL32(40, 40, 50, 200));
     ImGui::Begin("simple node editor");
+
+    if(ImGui::IsKeyPressed(ImGuiMod_Ctrl) | ImGui::IsKeyPressed(ImGuiKey_O)){
+
+        test_open_file();
+    }
 
     if(ImGui::BeginMainMenuBar()){
         if(ImGui::BeginMenu("File")){
@@ -200,11 +221,18 @@ void process() {
 static void MenuFile(){
     
     if (ImGui::MenuItem("New")){}
-    if (ImGui::MenuItem("Open", "Ctrl+O")) {}
-    if (ImGui::MenuItem("Save", "Ctrl+S")) {
-        serialize();
+    
+    if (ImGui::MenuItem("Open", "Ctrl+O")){
+
+       test_open_file();
+        
     }
-    if (ImGui::MenuItem("Save As..")) {}
+    if (ImGui::MenuItem("Save", "Ctrl+S")) {
+        test_save_file();
+    }
+    if (ImGui::MenuItem("Save As..")) {
+        test_save_file();
+    }
 }
 
 static void MenuEdit(){
