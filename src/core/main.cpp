@@ -26,6 +26,12 @@
 #include "../nodes/combinator.hpp"
 #include "../nodes/node.hpp"
 #include "../nodes/population.hpp"
+<<<<<<< Updated upstream
+=======
+#include "../nodes/variable.hpp"
+#include "../portable-file-dialogs/portable-file-dialogs.h"
+
+>>>>>>> Stashed changes
 #include "../pins/pin.hpp"
 #include "../portable-file-dialogs/portable-file-dialogs.h"
 
@@ -134,7 +140,10 @@ void test_save_file(){
                             { "Text Files (.txt .text)", "*.txt *.text" },
                             pfd::opt::force_overwrite);
 }
+<<<<<<< Updated upstream
 
+=======
+>>>>>>> Stashed changes
 void process() {
 
     // Rendering -------------------------------------------
@@ -147,11 +156,14 @@ void process() {
         test_open_file();
     }
 
+<<<<<<< Updated upstream
     if(ImGui::IsKeyPressed(ImGuiMod_Ctrl) | ImGui::IsKeyPressed(ImGuiKey_O)){
 
         test_open_file();
     }
 
+=======
+>>>>>>> Stashed changes
     if(ImGui::BeginMainMenuBar()){
         if(ImGui::BeginMenu("File")){
             MenuFile();
@@ -223,6 +235,7 @@ void process() {
 static void MenuFile(){
     
     if (ImGui::MenuItem("New")){}
+<<<<<<< Updated upstream
     
     if (ImGui::MenuItem("Open", "Ctrl+O")){
 
@@ -235,6 +248,8 @@ static void MenuFile(){
     if (ImGui::MenuItem("Save As..")) {
         test_save_file();
     }
+=======
+>>>>>>> Stashed changes
     if (ImGui::MenuItem("Open", "Ctrl+O")){
 
        test_open_file();
