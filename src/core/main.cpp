@@ -29,7 +29,6 @@
 #include "../pins/pin.hpp"
 #include "../portable-file-dialogs/portable-file-dialogs.h"
 
-
 static bool isContextMenuOpen = false;
 
 /* -----------------------------------------------------------------------------
@@ -122,7 +121,6 @@ void renderContextMenu() {
     if (isContextMenuOpen)
         ImGui::OpenPopup("Create Node");
 }
-
 void test_open_file(){
     // File open
     auto f = pfd::open_file("Choose file","~",
@@ -144,6 +142,11 @@ void process() {
 
     ImGui::PushStyleColor(ImGuiCol_WindowBg, IM_COL32(40, 40, 50, 200));
     ImGui::Begin("simple node editor");
+
+    if(ImGui::IsKeyPressed(ImGuiMod_Ctrl) | ImGui::IsKeyPressed(ImGuiKey_O)){
+
+        test_open_file();
+    }
 
     if(ImGui::IsKeyPressed(ImGuiMod_Ctrl) | ImGui::IsKeyPressed(ImGuiKey_O)){
 
@@ -222,6 +225,17 @@ static void MenuFile(){
     
     if (ImGui::MenuItem("New")){}
     
+    if (ImGui::MenuItem("Open", "Ctrl+O")){
+
+       test_open_file();
+        
+    }
+    if (ImGui::MenuItem("Save", "Ctrl+S")) {
+        test_save_file();
+    }
+    if (ImGui::MenuItem("Save As..")) {
+        test_save_file();
+    }
     if (ImGui::MenuItem("Open", "Ctrl+O")){
 
        test_open_file();
