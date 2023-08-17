@@ -22,7 +22,13 @@ ODEIR_MANIFEST_FILE=$(ODEIR_PATH)/Cargo.toml
 ODEIR_CPP_PATH=$(ODEIR_PATH)/cpp-src
 ODEIR_CPP_SRC=$(wildcard $(ODEIR_CPP_PATH)/**.cpp)
 
-INCLUDE_DIRS=-I. $(foreach path,$(IMGUI_SRC_PATH),-I$(path)) -I$(GLFW_SRC)/include -I$(FMT_INC) -I$(ODEIR_INC)
+PFD_INC=lib/portable-file-dialogs
+
+IMPLOT_SRC_PATH=lib/implot
+IMPLOT_SRC=$(wildcard $(IMPLOT_SRC_PATH)/*.cpp)
+IMPLOT_INC=$(IMPLOT_SRC_PATH)
+
+INCLUDE_DIRS=-I. $(foreach path,$(IMGUI_SRC_PATH),-I$(path)) -I$(GLFW_SRC)/include -I$(FMT_INC) -I$(ODEIR_INC) -I$(PFD_INC) -I$(IMPLOT_INC)
 LINK_DIRS=
 LINKS=-lGL -lm -ldl -pthread
 DEFINE=
@@ -34,13 +40,14 @@ HEADERS=$(wildcard src/**/*.h*)
 
 SRC_OBJ=$(foreach src,$(SRC),$(OBJ_DIR)/$(notdir $(basename $(src))).o)
 IMGUI_OBJ=$(foreach src,$(IMGUI_SRC),$(OBJ_DIR)/$(notdir $(basename $(src))).o)
+IMPLOT_OBJ=$(foreach src,$(IMPLOT_SRC),$(OBJ_DIR)/$(notdir $(basename $(src))).o)
 # ODEIR_CPP_OBJ=$(foreach src,$(ODEIR_CPP_SRC),$(OBJ_DIR)/$(notdir $(basename $(src))).o)
 ODEIR_CPP_OBJ=
-OBJ=$(SRC_OBJ) $(IMGUI_OBJ) $(ODEIR_CPP_OBJ)
+OBJ=$(SRC_OBJ) $(IMGUI_OBJ) $(ODEIR_CPP_OBJ) $(IMPLOT_OBJ)
 
 EXE=main
 
-VPATH=$(wildcard src/*) $(IMGUI_SRC_PATH) $(ODEIR_CPP_PATH) $(dir GLFW_LIB)
+VPATH=$(wildcard src/*) $(IMGUI_SRC_PATH) $(ODEIR_CPP_PATH) $(dir GLFW_LIB) $(dir ODEIR_LIB) $(IMPLOT_SRC_PATH)
 
 all: $(GLFW_LIB) $(EXE)
 release: all
@@ -57,6 +64,7 @@ $(EXE): $(OBJ_DIR) $(OBJ) $(ODEIR_LIB)
 	$(CC) $(CFLAGS) $(OBJ) $(ODEIR_LIB) $(GLFW_LIB) -o $@ $(INCLUDE_DIRS) $(LINK_DIRS) $(LINKS) $(DEFINE)
 
 $(OBJ): $(OBJ_DIR)/%.o: %.cpp
+	echo Making $<
 	$(CC) $(CFLAGS) $(CFLAGS_LIB) $< -o $@ $(INCLUDE_DIRS) $(LINK_DIRS) $(LINKS) $(DEFINE)
 
 $(ODEIR_LIB):
