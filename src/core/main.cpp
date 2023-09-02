@@ -3,6 +3,7 @@
 ----------------------------------------------------------------------------- */
 
 // clang-format off
+#include <cstdio>
 #define IMGUI_DEFINE_MATH_OPERATORS
 #include <imgui_internal.h>
 #include <imgui.h>
@@ -29,7 +30,9 @@
 #include "../nodes/population.hpp"
 #include "../pins/pin.hpp"
 #include "portable-file-dialogs.h"
+#include "../plot/plot.hpp"
 
+static vector<vector<double>> plot_data;
 
 static bool isContextMenuOpen = false;
 
@@ -120,6 +123,12 @@ void renderContextMenu() {
         ImGui::EndPopup();
     }
 
+    if (open_plot)
+        plot(plot_data, "Plot", "x", "y");
+    /*else if (simulate){
+
+    }*/
+
     if (isContextMenuOpen)
         ImGui::OpenPopup("Create Node");
 }
@@ -145,7 +154,7 @@ void process() {
     ImGui::PushStyleColor(ImGuiCol_WindowBg, IM_COL32(40, 40, 50, 200));
     ImGui::Begin("simple node editor");
 
-    if(ImGui::IsKeyPressed(ImGuiMod_Ctrl) | ImGui::IsKeyPressed(ImGuiKey_O)){
+    if(ImGui::Shortcut(ImGuiMod_Ctrl | ImGuiKey_O)){
 
         test_open_file();
     }
@@ -168,6 +177,7 @@ void process() {
     }
 
     renderContextMenu();
+        
     ImNodes::BeginNodeEditor();
 
     if (ImNodes::IsEditorHovered()) {
@@ -226,6 +236,22 @@ static void MenuFile(){
 
        test_open_file();
         
+    }
+    if(ImGui::MenuItem("Plot CSV file")){
+
+        auto f = pfd::open_file("Choose file","~",
+                            { "Files (.csv)", "*.csv *",
+                              "All Files", "*"},
+                            pfd::opt::none);
+        if(!f.result().empty()){
+            
+            plot_data = readCSV_MultidimensionalArray(f.result()[0]);
+            
+            std::cout << "deu bom"<<std::endl;
+            
+            open_plot = true;
+            
+        }
     }
     if (ImGui::MenuItem("Save", "Ctrl+S")) {
         test_save_file();
@@ -322,6 +348,7 @@ int main() {
 
         ImGui::ShowDemoWindow();
         ImPlot::ShowDemoWindow();
+
         ImGuiID dock_id
             = ImGui::DockSpaceOverViewport(ImGui::GetMainViewport(), 0);
         ImGui::SetNextWindowDockID(dock_id, true);
