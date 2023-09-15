@@ -14,7 +14,9 @@ using std::string;
 extern bool open_plot;
 
 vector<vector<double>> readCSV_MultidimensionalArray(string);
+
 void plot(vector<vector<double>>, string, string, string);
+
 void PrintTheCSV(vector<vector<double>>);
 
-#endif
+#endif // PLOT_HPP

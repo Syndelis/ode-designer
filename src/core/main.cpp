@@ -25,23 +25,12 @@
 #include <odeir.hpp>
 #undef ODEIR_DEFINITION
 
-#include "../nodes/combinator.hpp"
-#include "../nodes/node.hpp"
-#include "../nodes/population.hpp"
 #include "../pins/pin.hpp"
-#include "portable-file-dialogs.h"
-#include "../plot/plot.hpp"
-
-static vector<vector<double>> plot_data;
-
-static bool isContextMenuOpen = false;
+#include "../menu/menu.hpp"
 
 /* -----------------------------------------------------------------------------
     FUNCTIONS
 ----------------------------------------------------------------------------- */
-//retirar essas funções daqui, criar um header
-static void MenuFile();
-static void MenuEdit();
 
 void minimapHoverCallback(int nodeId, void *userData) {
 
@@ -62,117 +51,37 @@ void serialize() {
 
 // Context Menu --------------------------------------------
 
-using NodeFactory = Node *(*)(char *);
-
-#define NODE_ENTRY(name)          \
-    {                             \
-#name, createNode < name> \
-    }
-const int MAX_NODE_NAME_LENGTH = 50;
-
-template <typename T>
-Node *createNode(char *name) {
-    return new T(name); // NOLINT(cppcoreguidelines-owning-memory)
-}
-
-static std::map<std::string, NodeFactory> nodeFactories = {
-    NODE_ENTRY(Population),
-    NODE_ENTRY(Combinator),
-};
-
-static NodeFactory *currentFactory         = nullptr;
-static std::string currentNodeName         = "";
-static char nodeName[MAX_NODE_NAME_LENGTH] = "";
-
-void resetContextMenuState() {
-    currentFactory = nullptr;
-    nodeName[0]    = '\0';
-}
-
-void openContextMenu() {
-    isContextMenuOpen = true;
-    resetContextMenuState();
-}
-
-void renderContextMenu() {
-    if (ImGui::BeginPopupContextItem("Create Node")) {
-
-        if (currentFactory) {
-            ImGui::Text("New %s", currentNodeName.c_str());
-            if (ImGui::InputText(
-                    "##nodename", nodeName, MAX_NODE_NAME_LENGTH,
-                    ImGuiInputTextFlags_EnterReturnsTrue
-                )
-                || ImGui::Button("Create"))
-            {
-                (*currentFactory)(nodeName);
-                isContextMenuOpen = false;
-                resetContextMenuState();
-                ImGui::CloseCurrentPopup();
-            }
-        }
-
-        else
-            for (auto &[nodeName, nodeFactory] : nodeFactories)
-                if (ImGui::Selectable(nodeName.c_str())) {
-                    currentFactory    = &nodeFactory;
-                    currentNodeName   = nodeName;
-                    isContextMenuOpen = true;
-                }
-
-        ImGui::EndPopup();
-    }
-
-    if (open_plot)
-        plot(plot_data, "Plot", "x", "y");
-    /*else if (simulate){
-
-    }*/
-
-    if (isContextMenuOpen)
-        ImGui::OpenPopup("Create Node");
-}
-void test_open_file(){
-    // File open
-    auto f = pfd::open_file("Choose file","~",
-                            { "Files (.json)", "*.json *",
-                              "All Files", "*"},
-                            pfd::opt::none);
-}
-void test_save_file(){
-    // File save
-    auto f = pfd::save_file("Choose file to save",
-                            pfd::path::home() + pfd::path::separator() + "readme.txt",
-                            { "Text Files (.txt .text)", "*.txt *.text" },
-                            pfd::opt::force_overwrite);
-}
-
 void process() {
 
-    // Rendering -------------------------------------------
+    // Rendering -------------------------------------------------------------
 
     ImGui::PushStyleColor(ImGuiCol_WindowBg, IM_COL32(40, 40, 50, 200));
     ImGui::Begin("simple node editor");
 
     if(ImGui::Shortcut(ImGuiMod_Ctrl | ImGuiKey_O)){
 
-        test_open_file();
+        menuOpenfile();
     }
     
     if(ImGui::BeginMainMenuBar()){
+
         if(ImGui::BeginMenu("File")){
-            MenuFile();
+            menuBarFile();
             ImGui::EndMenu();
         }
+
         if(ImGui::BeginMenu("Edit")){
-            MenuEdit();
+            menuBarEdit();
             ImGui::EndMenu();
         }
+
         ImGui::EndMainMenuBar();
     }
 
     if (ImGui::Shortcut(ImGuiMod_Ctrl | ImGuiKey_S)) {
+        
         std::cout << "Ctrl S apertado!" << std::endl;
+        
         serialize();
     }
 
@@ -228,69 +137,6 @@ void process() {
 /* -----------------------------------------------------------------------------
     MAIN CODE
 ----------------------------------------------------------------------------- */
-static void MenuFile(){
-    
-    if (ImGui::MenuItem("New")){}
-
-    if (ImGui::MenuItem("Open", "Ctrl+O")){
-
-       test_open_file();
-        
-    }
-    if(ImGui::MenuItem("Plot CSV file")){
-
-        auto f = pfd::open_file("Choose file","~",
-                            { "Files (.csv)", "*.csv *",
-                              "All Files", "*"},
-                            pfd::opt::none);
-        if(!f.result().empty()){
-            
-            plot_data = readCSV_MultidimensionalArray(f.result()[0]);
-            
-            std::cout << "deu bom"<<std::endl;
-            
-            open_plot = true;
-            
-        }
-    }
-    if (ImGui::MenuItem("Save", "Ctrl+S")) {
-        test_save_file();
-    }
-    if (ImGui::MenuItem("Save As..")) {
-        test_save_file();
-    }
-}
-
-static void MenuEdit(){
-
-    if(ImGui::BeginMenu("Generate Code")){
-
-        static float f;
-        ImGui::InputFloat("Start_time", &f);
-        ImGui::InputFloat("Dt", &f);
-        ImGui::InputFloat("tfinal", &f);
-        
-        if(ImGui::BeginMenu("Export_Codes")){
-            if(ImGui::MenuItem("Python")){}
-            if(ImGui::MenuItem("C++")){}
-            if(ImGui::MenuItem("C")){}
-            ImGui::EndMenu();
-
-        }
-        ImGui::EndMenu();
-    }
-    if(ImGui::BeginMenu("Simulate Model")){
-
-        static float f;
-        ImGui::InputFloat("Start_time", &f);
-        ImGui::InputFloat("Dt", &f);
-        ImGui::InputFloat("tfinal", &f);
-        ImGui::Button("Simulate");
-
-        ImGui::EndMenu();
-    }
-}
-
 int main() {
 
     // GLFW Setup ------------------------------------------
@@ -339,6 +185,7 @@ int main() {
 
     // Main Loop -------------------------------------------
     while (!glfwWindowShouldClose(window)) {
+        
         glClear(GL_COLOR_BUFFER_BIT);
         ImGui_ImplOpenGL3_NewFrame();
         ImGui_ImplGlfw_NewFrame();
