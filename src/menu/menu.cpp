@@ -1,5 +1,8 @@
 #include "menu.hpp"
 
+
+static vector<vector<double>> plot_data;
+
 void resetContextMenuState() {
     currentFactory = nullptr;
     nodeName[0]    = '\0';
@@ -11,6 +14,7 @@ void openContextMenu() {
 }
 
 void renderContextMenu() {
+
     if (ImGui::BeginPopupContextItem("Create Node")) {
 
         if (currentFactory) {
@@ -35,7 +39,6 @@ void renderContextMenu() {
                     currentNodeName   = nodeName;
                     isContextMenuOpen = true;
                 }
-
         ImGui::EndPopup();
     }
 
@@ -44,8 +47,7 @@ void renderContextMenu() {
     /*else if (simulate){
 
     }*/
-
-    if (isContextMenuOpen){
+    if (isContextMenuOpen) {
 
         ImGui::OpenPopup("Create Node");
     }
@@ -53,43 +55,43 @@ void renderContextMenu() {
 
 void menuOpenfile() {
     // File open
-    auto f = pfd::open_file("Choose file","~",
-                            { "Files (.json)", "*.json *",
-                              "All Files", "*"},
-                            pfd::opt::none);
+    auto f = pfd::open_file(
+        "Choose file", "~", { "Files (.json)", "*.json *", "All Files", "*" },
+        pfd::opt::none
+    );
 }
 
 void menuSavefile() {
     // File save
-    auto f = pfd::save_file("Choose file to save",
-                            pfd::path::home() + pfd::path::separator() + "readme.txt",
-                            { "Text Files (.txt .text)", "*.txt *.text" },
-                            pfd::opt::force_overwrite);
+    auto f = pfd::save_file(
+        "Choose file to save",
+        pfd::path::home() + pfd::path::separator() + "readme.txt",
+        { "Text Files (.txt .text)", "*.txt *.text" }, pfd::opt::force_overwrite
+    );
 }
 
 void menuBarFile() {
-    
-    if (ImGui::MenuItem("New")){}
 
-    if (ImGui::MenuItem("Open", "Ctrl+O")){
-
-       menuOpenfile();
-        
+    if (ImGui::MenuItem("New")) {
     }
-    if(ImGui::MenuItem("Plot CSV file")){
 
-        auto f = pfd::open_file("Choose file","~",
-                            { "Files (.csv)", "*.csv *",
-                              "All Files", "*"},
-                            pfd::opt::none);
-        if(!f.result().empty()){
-            
+    if (ImGui::MenuItem("Open", "Ctrl+O")) {
+
+        menuOpenfile();
+    }
+    if (ImGui::MenuItem("Plot CSV file")) {
+
+        auto f = pfd::open_file(
+            "Choose file", "~", { "Files (.csv)", "*.csv *", "All Files", "*" },
+            pfd::opt::none
+        );
+        if (!f.result().empty()) {
+
             plot_data = readCSV_MultidimensionalArray(f.result()[0]);
-            
-            std::cout << "deu bom"<<std::endl;
-            
+
+            std::cout << "deu bom" << std::endl;
+
             open_plot = true;
-            
         }
     }
 
@@ -103,24 +105,26 @@ void menuBarFile() {
 
 void menuBarEdit() {
 
-    if(ImGui::BeginMenu("Generate Code")){
+    if (ImGui::BeginMenu("Generate Code")) {
 
         static float f;
 
         ImGui::InputFloat("Start_time", &f);
         ImGui::InputFloat("Dt", &f);
         ImGui::InputFloat("tfinal", &f);
-        
-        if(ImGui::BeginMenu("Export_Codes")){
-            if(ImGui::MenuItem("Python")){}
-            if(ImGui::MenuItem("C++")){}
-            if(ImGui::MenuItem("C")){}
-            ImGui::EndMenu();
 
+        if (ImGui::BeginMenu("Export_Codes")) {
+            if (ImGui::MenuItem("Python")) {
+            }
+            if (ImGui::MenuItem("C++")) {
+            }
+            if (ImGui::MenuItem("C")) {
+            }
+            ImGui::EndMenu();
         }
         ImGui::EndMenu();
     }
-    if(ImGui::BeginMenu("Simulate Model")){
+    if (ImGui::BeginMenu("Simulate Model")) {
 
         static float f;
 

@@ -25,8 +25,9 @@
 #include <odeir.hpp>
 #undef ODEIR_DEFINITION
 
-#include "../pins/pin.hpp"
 #include "../menu/menu.hpp"
+
+#include "../pins/pin.hpp"
 
 /* -----------------------------------------------------------------------------
     FUNCTIONS
@@ -43,8 +44,9 @@ void serialize() {
 
     for (auto &[id, node] : Node::allNodes)
         model = node->serializeInto(model);
-    
-    //Pegar esse serialize em vez de mostrar no terminal, abrir e salvar em um arquivo.
+
+    // Pegar esse serialize em vez de mostrar no terminal, abrir e salvar em um
+    // arquivo.
     std::cout << model.toJson() << std::endl;
 }
 
@@ -57,19 +59,19 @@ void process() {
     ImGui::PushStyleColor(ImGuiCol_WindowBg, IM_COL32(40, 40, 50, 200));
     ImGui::Begin("simple node editor");
 
-    if(ImGui::Shortcut(ImGuiMod_Ctrl | ImGuiKey_O)){
+    if (ImGui::Shortcut(ImGuiMod_Ctrl | ImGuiKey_O)) {
 
         menuOpenfile();
     }
-    
-    if(ImGui::BeginMainMenuBar()){
 
-        if(ImGui::BeginMenu("File")){
+    if (ImGui::BeginMainMenuBar()) {
+
+        if (ImGui::BeginMenu("File")) {
             menuBarFile();
             ImGui::EndMenu();
         }
 
-        if(ImGui::BeginMenu("Edit")){
+        if (ImGui::BeginMenu("Edit")) {
             menuBarEdit();
             ImGui::EndMenu();
         }
@@ -78,59 +80,78 @@ void process() {
     }
 
     if (ImGui::Shortcut(ImGuiMod_Ctrl | ImGuiKey_S)) {
-        
+
         std::cout << "Ctrl S apertado!" << std::endl;
-        
+
         serialize();
     }
 
-    renderContextMenu();
-        
-    ImNodes::BeginNodeEditor();
+    static bool teste = true;
 
-    if (ImNodes::IsEditorHovered()) {
-        if (!isContextMenuOpen && ImGui::IsMouseClicked(ImGuiMouseButton_Right))
-            openContextMenu();
+    ImGuiTabBarFlags tab_bar_flags = ImGuiTabBarFlags_TabListPopupButton;
+    if (ImGui::BeginTabBar("Teste", tab_bar_flags)) {
+
+        if (ImGui::BeginTabItem("Model", &teste)){
+
+            renderContextMenu();
+            
+            ImNodes::BeginNodeEditor();
+
+            if (ImNodes::IsEditorHovered()) {
+                if (!isContextMenuOpen
+                    && ImGui::IsMouseClicked(ImGuiMouseButton_Right))
+                    openContextMenu();
+            }
+            else
+                isContextMenuOpen = false;
+
+            // Node Handling ---------------------------------------
+
+            for (auto &[id, node] : Node::allNodes)
+                node->process();
+
+            // Link Drawing ----------------------------------------
+
+            for (auto &[srcId, srcPin] : Pin::allPins)
+                srcPin->renderLinks();
+
+            ImNodes::MiniMap(
+                .2f, ImNodesMiniMapLocation_BottomRight, minimapHoverCallback,
+                nullptr
+            );
+
+            float mouseWheel = ImGui::GetIO().MouseWheel;
+
+            if (mouseWheel != 0.0f && ImNodes::IsEditorHovered())
+                ImNodes::EditorContextSmoothZoom(
+                    ImNodes::EditorContextGetZoom() + mouseWheel * .5f,
+                    ImGui::GetMousePos()
+                );
+
+            ImNodes::EndNodeEditor();
+
+            // Link Processing --------------------------------------
+
+            int srcId, dstId;
+            if (ImNodes::IsLinkCreated(&srcId, &dstId))
+                Pin::linkTogether(srcId, dstId);
+
+            int linkId;
+            if (ImNodes::IsLinkHovered(&linkId) && ImGui::IsMouseClicked(0))
+                Pin::unlink(linkId);
+            
+            ImGui::EndTabItem();
+        }
+        if (ImGui::BeginTabItem("Simulation", &teste)) {
+
+            ImGui::Text("Simulation");
+            ImGui::EndTabItem();
+        }
+
+        ImGui::EndTabBar();
     }
-    else
-        isContextMenuOpen = false;
-
-    // Node Handling ---------------------------------------
-
-    for (auto &[id, node] : Node::allNodes)
-        node->process();
-
-    // Link Drawing ----------------------------------------
-
-    for (auto &[srcId, srcPin] : Pin::allPins)
-        srcPin->renderLinks();
-
-    ImNodes::MiniMap(
-        .2f, ImNodesMiniMapLocation_BottomRight, minimapHoverCallback, nullptr
-    );
-
-    float mouseWheel = ImGui::GetIO().MouseWheel;
-
-    if (mouseWheel != 0.0f && ImNodes::IsEditorHovered())
-        ImNodes::EditorContextSmoothZoom(
-            ImNodes::EditorContextGetZoom() + mouseWheel * .5f,
-            ImGui::GetMousePos()
-        );
-
-    ImNodes::EndNodeEditor();
-    ImGui::End();
-
     ImGui::PopStyleColor();
-
-    // Link Processing --------------------------------------
-
-    int srcId, dstId;
-    if (ImNodes::IsLinkCreated(&srcId, &dstId))
-        Pin::linkTogether(srcId, dstId);
-
-    int linkId;
-    if (ImNodes::IsLinkHovered(&linkId) && ImGui::IsMouseClicked(0))
-        Pin::unlink(linkId);
+    ImGui::End();
 }
 
 /* -----------------------------------------------------------------------------
@@ -184,7 +205,7 @@ int main() {
 
     // Main Loop -------------------------------------------
     while (!glfwWindowShouldClose(window)) {
-        
+
         glClear(GL_COLOR_BUFFER_BIT);
         ImGui_ImplOpenGL3_NewFrame();
         ImGui_ImplGlfw_NewFrame();
