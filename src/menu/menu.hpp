@@ -7,10 +7,7 @@
 #include "../plot/plot.hpp"
 #include "portable-file-dialogs.h"
 
-static vector<vector<double>> plot_data;
-
 static bool isContextMenuOpen = false;
-
 // Context Menu --------------------------------------------
 using NodeFactory = Node *(*)(char *);
 
