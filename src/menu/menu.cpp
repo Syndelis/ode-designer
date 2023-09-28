@@ -1,7 +1,6 @@
 #include "menu.hpp"
+#include "src/plot/plot.hpp"
 
-
-static vector<vector<double>> plot_data;
 
 void resetContextMenuState() {
     currentFactory = nullptr;
@@ -42,8 +41,6 @@ void renderContextMenu() {
         ImGui::EndPopup();
     }
 
-    if (open_plot)
-        plot(plot_data, "Plot", "x", "y");
     /*else if (simulate){
     }*/
     if (isContextMenuOpen) {
@@ -89,7 +86,7 @@ void menuBarFile() {
             plot_data = readCSV_MultidimensionalArray(f.result()[0]);
 
             std::cout << "deu bom" << std::endl;
-
+            std::cout << plot_data.size()<<std::endl;
             open_plot = true;
         }
     }

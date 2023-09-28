@@ -26,7 +26,7 @@
 #undef ODEIR_DEFINITION
 
 #include "../menu/menu.hpp"
-
+#include "src/plot/plot.hpp"
 #include "../pins/pin.hpp"
 
 /* -----------------------------------------------------------------------------
@@ -86,12 +86,10 @@ void process() {
         serialize();
     }
 
-    static bool teste = true;
-
     ImGuiTabBarFlags tab_bar_flags = ImGuiTabBarFlags_TabListPopupButton;
     if (ImGui::BeginTabBar("Teste", tab_bar_flags)) {
 
-        if (ImGui::BeginTabItem("Model", &teste)){
+        if (ImGui::BeginTabItem("Model")){
 
             renderContextMenu();
             
@@ -142,10 +140,11 @@ void process() {
             
             ImGui::EndTabItem();
         }
-        if (ImGui::BeginTabItem("Simulation", &teste)) {
+        if (ImGui::BeginTabItem("Plot", &open_plot)) {
 
-            ImGui::Text("Simulation");
-            ImGui::EndTabItem();
+            std::cout << "Opa" << plot_data.size() << std::endl;
+            plot(plot_data, "Plot", "x", "y");
+            ImGui::EndTabItem();        
         }
 
         ImGui::EndTabBar();

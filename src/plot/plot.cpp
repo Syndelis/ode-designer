@@ -6,6 +6,7 @@
 #include <fstream>
 
 bool open_plot = false;
+vector<vector<double>> plot_data;
 
 // vector<vector<double>> readCSV_MultidimensionalArray(string fname) {
 //     vector<vector<double>> data;
@@ -94,26 +95,30 @@ vector<vector<double>> readCSV_MultidimensionalArray(string fname){
 // }
 void plot(vector<vector<double>> data, string title, string x_label, string y_label){
 
-    std::cout << open_plot << std::endl;
-    if(ImGui::BeginTabItem("Plot")){
-        ImGui::SetNextWindowSize(ImVec2(480, 720));
-    
-        if(ImPlot::BeginPlot(title.c_str())){
-            
-            ImPlot::SetupAxes(x_label.c_str(), y_label.c_str());
-            std::size_t S = data.size();
-            
-            double p[S], times[S];
-            
-            for (std::size_t i = 0; i < S; i++){
-                p[i] = data[i][1];
-                times[i] = data[i][0];
-            }
-            
-            ImPlot::PlotLine("V",times,p,(int)S);
-            ImPlot::EndPlot();
+    //std::cout << open_plot << std::endl;
+
+    ImGui::SetNextWindowSize(ImVec2(480, 720));
+
+    if(ImPlot::BeginPlot(title.c_str())){
+        
+        ImPlot::SetupAxes(x_label.c_str(), y_label.c_str());
+        
+        std::size_t S = data.size();
+        
+        std::cout << "tamanho do S " << S << std::endl;
+
+        double p[S], times[S];
+        
+        for (std::size_t i = 0; i < S; i++){
+            p[i] = data[i][1];
+            times[i] = data[i][0];
+
+            std::cout << p[i] << " " << times[i] << std::endl;
         }
-    }
+        
+        ImPlot::PlotLine("V",times,p,(int)S);
+        ImPlot::EndPlot();
+    }   
 }
 
 void PrintTheCSV(vector<vector<double>> data){
