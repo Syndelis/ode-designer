@@ -45,7 +45,6 @@ void renderContextMenu() {
     if (open_plot)
         plot(plot_data, "Plot", "x", "y");
     /*else if (simulate){
-
     }*/
     if (isContextMenuOpen) {
 
