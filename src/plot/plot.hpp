@@ -13,6 +13,8 @@ using std::string;
 
 extern bool open_plot;
 
+extern vector<vector<double>> plot_data;
+
 vector<vector<double>> readCSV_MultidimensionalArray(string);
 
 void plot(vector<vector<double>>, string, string, string);
