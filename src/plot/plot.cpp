@@ -49,33 +49,62 @@ vector<vector<double>> readCSV_MultidimensionalArray(string fname){
     return array;
 }
 
+// void plot(vector<vector<double>> data, string title, string x_label, string y_label){
+
+//     // if (ImGui::Begin("Style Editor (ImGui)", NULL)){
+       
+//     //     if(ImPlot::BeginPlot(title.c_str())){
+//     //         cout << "Plotting" << endl;
+//     //         ImPlot::SetupAxes(x_label.c_str(), y_label.c_str());
+//     //         std::size_t S = data.size();
+//     //         double p[S], times[S];
+//     //         for (std::size_t i = 0; i < S; i++){
+//     //             p[i] = data[i][1];
+//     //             times[i] = data[i][0];
+//     //         }
+            
+//     //         ImPlot::PlotLine("V",times,p,(int)S);
+//     //         ImPlot::EndPlot();
+//     //     }
+//     //     ImGui::End();
+//     // }
+//     std::cout << open_plot << std::endl;
+//     ImGui::OpenPopup("Plot");
+//     ImGui::SetNextWindowSize(ImVec2(800, 600));
+//      if (ImGui::BeginPopupModal("Plot")){
+//            if(ImPlot::BeginPlot(title.c_str())){
+//             ImPlot::SetupAxes(x_label.c_str(), y_label.c_str());
+//             std::size_t S = data.size();
+//             double p[S], times[S];
+//             for (std::size_t i = 0; i < S; i++){
+//                 p[i] = data[i][1];
+//                 times[i] = data[i][0];
+//             }
+            
+//             ImPlot::PlotLine("V",times,p,(int)S);
+//             ImPlot::EndPlot();
+//         }
+//         ImGui::EndPopup();
+//     }
+//     //if (open_plot) {
+        
+//     //}
+
+    
+// }
 void plot(vector<vector<double>> data, string title, string x_label, string y_label){
 
-    // if (ImGui::Begin("Style Editor (ImGui)", NULL)){
-       
-    //     if(ImPlot::BeginPlot(title.c_str())){
-    //         cout << "Plotting" << endl;
-    //         ImPlot::SetupAxes(x_label.c_str(), y_label.c_str());
-    //         std::size_t S = data.size();
-    //         double p[S], times[S];
-    //         for (std::size_t i = 0; i < S; i++){
-    //             p[i] = data[i][1];
-    //             times[i] = data[i][0];
-    //         }
-            
-    //         ImPlot::PlotLine("V",times,p,(int)S);
-    //         ImPlot::EndPlot();
-    //     }
-    //     ImGui::End();
-    // }
     std::cout << open_plot << std::endl;
-    ImGui::OpenPopup("Plot");
-    ImGui::SetNextWindowSize(ImVec2(800, 600));
-     if (ImGui::BeginPopupModal("Plot")){
-           if(ImPlot::BeginPlot(title.c_str())){
+    if(ImGui::BeginTabItem("Plot")){
+        ImGui::SetNextWindowSize(ImVec2(480, 720));
+    
+        if(ImPlot::BeginPlot(title.c_str())){
+            
             ImPlot::SetupAxes(x_label.c_str(), y_label.c_str());
             std::size_t S = data.size();
+            
             double p[S], times[S];
+            
             for (std::size_t i = 0; i < S; i++){
                 p[i] = data[i][1];
                 times[i] = data[i][0];
@@ -84,11 +113,7 @@ void plot(vector<vector<double>> data, string title, string x_label, string y_la
             ImPlot::PlotLine("V",times,p,(int)S);
             ImPlot::EndPlot();
         }
-        ImGui::EndPopup();
     }
-    //if (open_plot) {
-        
-    //}
 }
 
 void PrintTheCSV(vector<vector<double>> data){
