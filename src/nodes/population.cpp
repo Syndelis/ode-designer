@@ -20,7 +20,6 @@ void Population::renderContent() {
 
     ImGui::PushItemWidth(100);
     ImGui::InputFloat("", &value);
-       
 }
 
 bool Population::onPinLinked(Pin *thisPin, Node *otherNode) {

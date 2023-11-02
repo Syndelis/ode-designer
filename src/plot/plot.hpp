@@ -1,15 +1,15 @@
 #ifndef PLOT_HPP
 #define PLOT_HPP
 
+#include <imgui.h>
 #include <implot.h>
 #include <iostream>
-#include <vector>
-#include <string>
 #include <sstream>
-#include <imgui.h>
+#include <string>
+#include <vector>
 
-using std::vector;
 using std::string;
+using std::vector;
 
 extern bool open_plot;
 

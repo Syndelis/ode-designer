@@ -1,7 +1,6 @@
 #include "menu.hpp"
 #include "src/plot/plot.hpp"
 
-
 void resetContextMenuState() {
     currentFactory = nullptr;
     nodeName[0]    = '\0';
@@ -86,7 +85,7 @@ void menuBarFile() {
             plot_data = readCSV_MultidimensionalArray(f.result()[0]);
 
             std::cout << "deu bom" << std::endl;
-            std::cout << plot_data.size()<<std::endl;
+            std::cout << plot_data.size() << std::endl;
             open_plot = true;
         }
     }

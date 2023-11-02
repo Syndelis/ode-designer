@@ -25,8 +25,10 @@
 #include <odeir.hpp>
 #undef ODEIR_DEFINITION
 
-#include "../menu/menu.hpp"
 #include "src/plot/plot.hpp"
+
+#include "../menu/menu.hpp"
+
 #include "../pins/pin.hpp"
 
 /* -----------------------------------------------------------------------------
@@ -89,10 +91,10 @@ void process() {
     ImGuiTabBarFlags tab_bar_flags = ImGuiTabBarFlags_TabListPopupButton;
     if (ImGui::BeginTabBar("Teste", tab_bar_flags)) {
 
-        if (ImGui::BeginTabItem("Model")){
+        if (ImGui::BeginTabItem("Model")) {
 
             renderContextMenu();
-            
+
             ImNodes::BeginNodeEditor();
 
             if (ImNodes::IsEditorHovered()) {
@@ -137,14 +139,14 @@ void process() {
             int linkId;
             if (ImNodes::IsLinkHovered(&linkId) && ImGui::IsMouseClicked(0))
                 Pin::unlink(linkId);
-            
+
             ImGui::EndTabItem();
         }
         if (ImGui::BeginTabItem("Plot", &open_plot)) {
 
             std::cout << "Opa" << plot_data.size() << std::endl;
             plot(plot_data, "Plot", "x", "y");
-            ImGui::EndTabItem();        
+            ImGui::EndTabItem();
         }
 
         ImGui::EndTabBar();
