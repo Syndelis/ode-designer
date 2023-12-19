@@ -25,7 +25,10 @@ public:
     void onPinUnlinked(Pin *thisPin, Node *otherNode) override;
 
     Model serializeInto(Model model) override;
+<<<<<<< HEAD
 
+=======
+>>>>>>> 40e1569e6eea3a2bbbf4c62fd5086e008ac2209f
 };
 
 #endif

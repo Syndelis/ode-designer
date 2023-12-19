@@ -4,7 +4,10 @@
 
 // clang-format off
 #include <cstdio>
+<<<<<<< HEAD
 #include <limits>
+=======
+>>>>>>> 40e1569e6eea3a2bbbf4c62fd5086e008ac2209f
 #define IMGUI_DEFINE_MATH_OPERATORS
 #include <imgui_internal.h>
 #include <imgui.h>
@@ -27,10 +30,19 @@
 #include <odeir.hpp>
 #undef ODEIR_DEFINITION
 
+<<<<<<< HEAD
 #include "../menu/menu.hpp"
 #include "../plot/plot.hpp"
 #include "../pins/pin.hpp"
 
+=======
+#include "src/plot/plot.hpp"
+
+#include "../menu/menu.hpp"
+
+#include "../pins/pin.hpp"
+
+>>>>>>> 40e1569e6eea3a2bbbf4c62fd5086e008ac2209f
 /* -----------------------------------------------------------------------------
     FUNCTIONS
 ----------------------------------------------------------------------------- */
@@ -41,6 +53,7 @@ void minimapHoverCallback(int nodeId, void *userData) {
 }
 
 void serialize() {
+<<<<<<< HEAD
 
     Model model = ModelBuilder<InitialState>().setMetadata(0, 0, 0);
 
@@ -198,6 +211,116 @@ void process() {
             plotGraphs();
         }
                 
+=======
+
+    Model model = ModelBuilder<InitialState>().setMetadata(0, 0, 0);
+
+    for (auto &[id, node] : Node::allNodes)
+        model = node->serializeInto(model);
+
+    // Pegar esse serialize em vez de mostrar no terminal, abrir e salvar em um
+    // arquivo.
+    std::cout << model.toJson() << std::endl;
+}
+
+// Context Menu --------------------------------------------
+
+void process() {
+
+    // Rendering -------------------------------------------------------------
+
+    ImGui::PushStyleColor(ImGuiCol_WindowBg, IM_COL32(40, 40, 50, 200));
+    ImGui::Begin("simple node editor");
+
+    if (ImGui::Shortcut(ImGuiMod_Ctrl | ImGuiKey_O)) {
+
+        menuOpenfile();
+    }
+
+    if (ImGui::BeginMainMenuBar()) {
+
+        if (ImGui::BeginMenu("File")) {
+            menuBarFile();
+            ImGui::EndMenu();
+        }
+
+        if (ImGui::BeginMenu("Edit")) {
+            menuBarEdit();
+            ImGui::EndMenu();
+        }
+
+        ImGui::EndMainMenuBar();
+    }
+
+    if (ImGui::Shortcut(ImGuiMod_Ctrl | ImGuiKey_S)) {
+
+        std::cout << "Ctrl S apertado!" << std::endl;
+
+        serialize();
+    }
+
+    ImGuiTabBarFlags tab_bar_flags = ImGuiTabBarFlags_TabListPopupButton;
+    if (ImGui::BeginTabBar("Teste", tab_bar_flags)) {
+
+        if (ImGui::BeginTabItem("Model")) {
+
+            renderContextMenu();
+
+            ImNodes::BeginNodeEditor();
+
+            if (ImNodes::IsEditorHovered()) {
+                if (!isContextMenuOpen
+                    && ImGui::IsMouseClicked(ImGuiMouseButton_Right))
+                    openContextMenu();
+            }
+            else
+                isContextMenuOpen = false;
+
+            // Node Handling ---------------------------------------
+
+            for (auto &[id, node] : Node::allNodes)
+                node->process();
+
+            // Link Drawing ----------------------------------------
+
+            for (auto &[srcId, srcPin] : Pin::allPins)
+                srcPin->renderLinks();
+
+            ImNodes::MiniMap(
+                .2f, ImNodesMiniMapLocation_BottomRight, minimapHoverCallback,
+                nullptr
+            );
+
+            float mouseWheel = ImGui::GetIO().MouseWheel;
+
+            if (mouseWheel != 0.0f && ImNodes::IsEditorHovered())
+                ImNodes::EditorContextSmoothZoom(
+                    ImNodes::EditorContextGetZoom() + mouseWheel * .5f,
+                    ImGui::GetMousePos()
+                );
+
+            ImNodes::EndNodeEditor();
+
+            // Link Processing --------------------------------------
+
+            int srcId, dstId;
+            if (ImNodes::IsLinkCreated(&srcId, &dstId))
+                Pin::linkTogether(srcId, dstId);
+
+            int linkId;
+            if (ImNodes::IsLinkHovered(&linkId) && ImGui::IsMouseClicked(0))
+                Pin::unlink(linkId);
+
+            ImGui::EndTabItem();
+        }
+        if (ImGui::BeginTabItem("Plot", &open_plot)) {
+
+            std::cout << "Opa" << plot_data.size() << std::endl;
+            plot(plot_data, "Plot", "x", "y");
+            ImGui::EndTabItem();
+        }
+
+>>>>>>> 40e1569e6eea3a2bbbf4c62fd5086e008ac2209f
         ImGui::EndTabBar();
     }
     ImGui::PopStyleColor();
@@ -244,6 +367,8 @@ int main() {
     // Application Setup -----------------------------------
 
 
+    ImPlot::CreateContext();
+
     // Main Loop -------------------------------------------
     while (!glfwWindowShouldClose(window)) {
 
@@ -254,6 +379,12 @@ int main() {
 
         // Draw Start ---------------------------------------
 
+<<<<<<< HEAD
+=======
+        ImGui::ShowDemoWindow();
+        ImPlot::ShowDemoWindow();
+
+>>>>>>> 40e1569e6eea3a2bbbf4c62fd5086e008ac2209f
         ImGuiID dock_id
             = ImGui::DockSpaceOverViewport(ImGui::GetMainViewport(), 0);
         ImGui::SetNextWindowDockID(dock_id, true);

@@ -1,4 +1,8 @@
 #include "menu.hpp"
+<<<<<<< HEAD
+=======
+#include "src/plot/plot.hpp"
+>>>>>>> 40e1569e6eea3a2bbbf4c62fd5086e008ac2209f
 
 void resetContextMenuState() {
     currentFactory = nullptr;
@@ -28,6 +32,10 @@ void renderContextMenu() {
                 ImGui::CloseCurrentPopup();
             }
         }
+<<<<<<< HEAD
+=======
+
+>>>>>>> 40e1569e6eea3a2bbbf4c62fd5086e008ac2209f
         else
             for (auto &[nodeName, nodeFactory] : nodeFactories)
                 if (ImGui::Selectable(nodeName.c_str())) {
@@ -49,7 +57,11 @@ void renderContextMenu() {
 void menuOpenfile() {
     // File open
     auto f = pfd::open_file(
+<<<<<<< HEAD
         "Choose file", ".", { "Files (.json)", "*.json" },
+=======
+        "Choose file", "~", { "Files (.json)", "*.json *", "All Files", "*" },
+>>>>>>> 40e1569e6eea3a2bbbf4c62fd5086e008ac2209f
         pfd::opt::none
     );
 }
@@ -58,9 +70,14 @@ void menuSavefile() {
     // File save
     auto f = pfd::save_file(
         "Choose file to save",
+<<<<<<< HEAD
         //pfd::path:: + pfd::path::separator() + ".json",
         ".",
         { "Files (.json)", "*.json" }, pfd::opt::force_overwrite
+=======
+        pfd::path::home() + pfd::path::separator() + "readme.txt",
+        { "Text Files (.txt .text)", "*.txt *.text" }, pfd::opt::force_overwrite
+>>>>>>> 40e1569e6eea3a2bbbf4c62fd5086e008ac2209f
     );
 }
 
@@ -68,6 +85,7 @@ void menuBarFile() {
 
     if (ImGui::MenuItem("New")) {
     }
+<<<<<<< HEAD
     if (ImGui::MenuItem("Open", "Ctrl+O")) {
 
         menuOpenfile();
@@ -153,11 +171,59 @@ void menuBarEdit() {
             if (ImGui::Button("Python")) {
             }
             if (ImGui::Button("C++")) {
+=======
+
+    if (ImGui::MenuItem("Open", "Ctrl+O")) {
+
+        menuOpenfile();
+    }
+    if (ImGui::MenuItem("Plot CSV file")) {
+
+        auto f = pfd::open_file(
+            "Choose file", "~", { "Files (.csv)", "*.csv *", "All Files", "*" },
+            pfd::opt::none
+        );
+        if (!f.result().empty()) {
+
+            plot_data = readCSV_MultidimensionalArray(f.result()[0]);
+
+            std::cout << "deu bom" << std::endl;
+            std::cout << plot_data.size() << std::endl;
+            open_plot = true;
+        }
+    }
+
+    if (ImGui::MenuItem("Save", "Ctrl+S")) {
+        menuSavefile();
+    }
+    if (ImGui::MenuItem("Save As..")) {
+        menuSavefile();
+    }
+}
+
+void menuBarEdit() {
+
+    if (ImGui::BeginMenu("Generate Code")) {
+
+        static float f;
+
+        ImGui::InputFloat("Start_time", &f);
+        ImGui::InputFloat("Dt", &f);
+        ImGui::InputFloat("tfinal", &f);
+
+        if (ImGui::BeginMenu("Export_Codes")) {
+            if (ImGui::MenuItem("Python")) {
+            }
+            if (ImGui::MenuItem("C++")) {
+            }
+            if (ImGui::MenuItem("C")) {
+>>>>>>> 40e1569e6eea3a2bbbf4c62fd5086e008ac2209f
             }
             ImGui::EndMenu();
         }
         ImGui::EndMenu();
     }
+<<<<<<< HEAD
     if (ImGui::BeginMenu("Simulate Model")) {        
         static float ti, tf, dt; 
         ImGui::InputFloat("t initial", &ti);
@@ -196,6 +262,16 @@ void menuBarEdit() {
             plot_all = false;
             flag_simulation = true;
         }
+=======
+    if (ImGui::BeginMenu("Simulate Model")) {
+
+        static float f;
+
+        ImGui::InputFloat("Start_time", &f);
+        ImGui::InputFloat("Dt", &f);
+        ImGui::InputFloat("tfinal", &f);
+        ImGui::Button("Simulate");
+>>>>>>> 40e1569e6eea3a2bbbf4c62fd5086e008ac2209f
 
         ImGui::EndMenu();
     }

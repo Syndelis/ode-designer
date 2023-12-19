@@ -62,7 +62,11 @@ Model Node::serializeInto(Model model) {
     // implemented in the subclasses. This is a workaround.
 
     // Introducing a static_assert to guarantee it's never called doesn't work,
+<<<<<<< HEAD
     // as the compiler seems to be adamant that it is, in fact, being called.    
+=======
+    // as the compiler seems to be adamant that it is, in fact, being called.
+>>>>>>> 40e1569e6eea3a2bbbf4c62fd5086e008ac2209f
 
     return model;
 }

@@ -11,3 +11,6 @@ main
 
 # VS Code extension logs
 .vscode/*.log
+
+#cache Clang
+.cache/

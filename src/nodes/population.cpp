@@ -20,7 +20,10 @@ void Population::renderContent() {
 
     ImGui::PushItemWidth(100);
     ImGui::InputFloat("", &value);
+<<<<<<< HEAD
        
+=======
+>>>>>>> 40e1569e6eea3a2bbbf4c62fd5086e008ac2209f
 }
 
 bool Population::onPinLinked(Pin *thisPin, Node *otherNode) {
@@ -42,9 +45,13 @@ void Population::onPinUnlinked(Pin *thisPin, Node *otherNode) {
 
 Model Population::serializeInto(Model model) {
 
+<<<<<<< HEAD
     auto popState = model
         .buildNode(id, name)
         .withRelatedConstant("TODO!");
+=======
+    auto popState = model.buildNode(id, name).withRelatedConstant("TODO!");
+>>>>>>> 40e1569e6eea3a2bbbf4c62fd5086e008ac2209f
 
     if (name_echoer->linkedTo.empty())
         return popState;
@@ -61,5 +68,8 @@ Model Population::serializeInto(Model model) {
         linkState = linkState.addLink(keys[i], '+');
 
     return linkState;
+<<<<<<< HEAD
     
+=======
+>>>>>>> 40e1569e6eea3a2bbbf4c62fd5086e008ac2209f
 }

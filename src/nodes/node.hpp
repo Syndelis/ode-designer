@@ -4,6 +4,7 @@
 #include <imnodes.h>
 #include <iostream>
 #include <map>
+#include <odeir.hpp>
 #include <string>
 #include <vector>
 #include <odeir.hpp>
