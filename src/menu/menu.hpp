@@ -6,6 +6,7 @@
 #include "../nodes/population.hpp"
 #include "../plot/plot.hpp"
 #include "portable-file-dialogs.h"
+#include "../simulation/interactive_simulation.h"
 
 static bool isContextMenuOpen = false;
 // Context Menu --------------------------------------------

@@ -1,154 +1,190 @@
 #include "imgui.h"
 #include "implot.h"
-#include "plot.hpp"
+#include <algorithm>
 #include <cstddef>
 #include <endian.h>
 #include <fstream>
+#include <iterator>
+#include <string>
+#include <math.h>
 
-bool open_plot = false;
-vector<vector<double>> plot_data;
+using namespace std;
 
-// vector<vector<double>> readCSV_MultidimensionalArray(string fname) {
-//     vector<vector<double>> data;
-//     ifstream file(fname);
-//     string line = "";
-//     while (getline(file, line)) {
-//         vector<double> vec;
-//         stringstream ss(line);
-//         string cell = "";
-//         while (getline(ss, cell, ',')) {
-//             vec.push_back(stod(cell));
-//         }
-//         data.push_back(vec);
-//     }
-//     return data;
-// }
+#include "plot.hpp"
 
-// void plot(vector<vector<double>> data, string title, string x_label, string y_label) {
-// //     ImPlot::SetNextPlotLimits(0, 1, 0, 1, ImGuiCond_Always);
-// //     if (ImPlot::BeginPlot(title.c_str(), x_label.c_str(), y_label.c_str())) {
-// //         for (int i = 0; i < data.size(); i++) {
-// //             ImPlot::PlotLine(data[i].data(), data[i].size());
-// //         }
-// //         ImPlot::EndPlot();
-// //     }
-// // }
+bool plot_all = false;
+PlotLayout plot_layout;
+std::vector<PlotInfo> plots;
 
-vector<vector<double>> readCSV_MultidimensionalArray(string fname){
+std::vector<ImVec4> colors ={ImVec4(0.98,0.027,0.027,1), //vermelha
+                            ImVec4(0.09,0.027,0.98,1), //azul
+                            ImVec4(0.027,0.98,0.12,1), //verde claro
+                            ImVec4(0.96,0.98,0.027,1), //amarelo
+                            ImVec4(0.5,0.,1,1), //roxo
+                            ImVec4(1,0.5,0.,1), //laranja
+                            ImVec4(0.2,1,1,1), //ciano
+                            ImVec4(1,0.2,0.6,1), //rosa
+                            ImVec4(0.4,0.7,1,1), //azul claro
+                            ImVec4(1,0.4,0.4,1), //vermelho claro                                                        
+                            ImVec4(1,0.2,1,1), //magenta                            
+                            ImVec4(1,0.7,0.4,1), //laranja claro
+                            ImVec4(0.74,0.055,0.055,1),
+                            ImVec4(0.6,0.298,0.,1)};
+                            //ImVec4(0.1,0.4,0.1,1), //verde escuro 
 
+void clearPlotData(){
+    //plot is global
+    for (PlotInfo plot: plots){
+        for (std::vector<double> v: plot.data) {
+            v.clear();
+        }
+        plot.data.clear();
+        plot.time_data.clear();
+        plot.labels.clear();
+    }
+    plots.clear();
+}
+
+//return the table's headings 
+std::vector<std::string> readColumnNames(std::string fname){
     std::ifstream f(fname);
-    string line, val;                  /* string for line & value */
-    vector<vector<double>> array;    /* vector of vector<int>  */
+    std::string line, val;
+    std::getline(f,line); 
+    std::stringstream s (line);
+    std::vector<std::string> labels;
+    while (getline (s, val, ',')) 
+        labels.push_back(val);
+    labels.erase(labels.begin() + 0);
+    f.close();
+    return labels;
+}
+
+std::vector<std::vector<double>> readCSV_MultidimensionalArray(std::string fname){ 
+    std::vector<std::vector<double>> data;   
+    std::ifstream f(fname);
+    std::string line, val;
+    std::getline(f,line); 
 
     while (getline (f, line)) {        /* read each line */
-        vector<double> v;                 /* row vector v */
+        std::vector<double> v;                 /* row vector v */
         std::stringstream s (line);         /* stringstream line */
         while (getline (s, val, ','))       /* get each value (',' delimited) */
             v.push_back (stod (val));  /* add to row vector */
-        array.push_back (v);                /* add row vector to array */
+        data.push_back (v);                /* add row vector to array */
     }
-    return array;
+    f.close();
+    return data;
 }
 
-// void plot(vector<vector<double>> data, string title, string x_label, string y_label){
-
-//     // if (ImGui::Begin("Style Editor (ImGui)", NULL)){
-       
-//     //     if(ImPlot::BeginPlot(title.c_str())){
-//     //         cout << "Plotting" << endl;
-//     //         ImPlot::SetupAxes(x_label.c_str(), y_label.c_str());
-//     //         std::size_t S = data.size();
-//     //         double p[S], times[S];
-//     //         for (std::size_t i = 0; i < S; i++){
-//     //             p[i] = data[i][1];
-//     //             times[i] = data[i][0];
-//     //         }
-            
-//     //         ImPlot::PlotLine("V",times,p,(int)S);
-//     //         ImPlot::EndPlot();
-//     //     }
-//     //     ImGui::End();
-//     // }
-//     std::cout << open_plot << std::endl;
-//     ImGui::OpenPopup("Plot");
-//     ImGui::SetNextWindowSize(ImVec2(800, 600));
-//      if (ImGui::BeginPopupModal("Plot")){
-//            if(ImPlot::BeginPlot(title.c_str())){
-//             ImPlot::SetupAxes(x_label.c_str(), y_label.c_str());
-//             std::size_t S = data.size();
-//             double p[S], times[S];
-//             for (std::size_t i = 0; i < S; i++){
-//                 p[i] = data[i][1];
-//                 times[i] = data[i][0];
-//             }
-            
-//             ImPlot::PlotLine("V",times,p,(int)S);
-//             ImPlot::EndPlot();
-//         }
-//         ImGui::EndPopup();
-//     }
-//     //if (open_plot) {
-        
-//     //}
-
+PlotInfo loadData(std::string fname) {
+    PlotInfo plot;
+    plot.labels = readColumnNames(fname);
+    std::vector<std::vector<double>> data = readCSV_MultidimensionalArray(fname);
     
-// }
-void plot(vector<vector<double>> data, string title, string x_label, string y_label){
+    plot.num_of_lines = data.size();
+    plot.num_of_cols = data[0].size()-1;
 
-    //std::cout << open_plot << std::endl;
+    plot.time_data.reserve(plot.num_of_lines);
+    plot.time_data.resize(plot.num_of_lines);
+    for (std::size_t i = 0; i < plot.num_of_lines; i++)
+        plot.time_data[i] = data[i][0];
 
-    ImGui::SetNextWindowSize(ImVec2(480, 720));
+    plot.data.reserve(plot.num_of_cols);
+    plot.data.resize(plot.num_of_cols);
+    for (std::size_t j = 0; j < plot.num_of_cols; j++)    
+        for (std::size_t i = 0; i < plot.num_of_lines; i++)
+            plot.data[j].push_back(data[i][j+1]);
 
-    if(ImPlot::BeginPlot(title.c_str())){
-        
-        ImPlot::SetupAxes(x_label.c_str(), y_label.c_str());
-        
-        std::size_t S = data.size();
-        
-        std::cout << "tamanho do S " << S << std::endl;
+    return plot;
+}
 
-        double p[S], times[S];
-        
-        for (std::size_t i = 0; i < S; i++){
-            p[i] = data[i][1];
-            times[i] = data[i][0];
+void initializePlot(int n, float n_graphs_tab){
+    //plot_layout is global
+    plot_layout.next_tab_id = 0;
+    plot_layout.active_tabs.clear();
+    plot_layout.number_of_tabs = ceil((float)n/n_graphs_tab);
+    if (plot_layout.number_of_tabs == 0)
+        plot_layout.number_of_tabs = 1; 
+    for (int i = 0; i < plot_layout.number_of_tabs; i++){
+        plot_layout.active_tabs.push_back(plot_layout.next_tab_id++);
+    }
+    plot_layout.style = ImPlot::GetStyle();
+    plot_layout.style.LineWeight = 2.;
+}
 
-            std::cout << p[i] << " " << times[i] << std::endl;
+void plot(PlotInfo plot, PlotLayout plot_layout, unsigned int id){       
+    
+    if (ImPlot::BeginSubplots(plot.title.c_str(), plot_layout.rows, plot_layout.cols, ImVec2(ImGui::GetWindowSize().x - 50, ImGui::GetWindowSize().y - 50), 
+        ImPlotSubplotFlags_None)) {
+               
+        int color_index = id, colors_size = colors.size();
+        for (int i = 0; i < plot_layout.rows*plot_layout.cols; ++i) {
+            
+            int index = id + i;
+            if (index == plot.num_of_cols)
+                break;
+
+            const char* label = plot.labels[index].c_str();            
+            if(ImPlot::BeginPlot(label)){
+                
+                ImPlot::SetupAxes(plot.xlabel.c_str(), plot.ylabel.c_str(),ImPlotAxisFlags_AutoFit,ImPlotAxisFlags_AutoFit);
+                ImPlot::SetNextLineStyle(colors[color_index%colors_size]);
+                color_index++;
+                ImPlot::PlotLine(label,plot.time_data.data(),plot.data[index].data(),plot.num_of_lines);
+
+                ImPlot::EndPlot();                
+            }
         }
+
+        ImPlot::EndSubplots();
+    }
+}
+
+void plotDifferentScenarios(std::vector<PlotInfo> plots, PlotLayout plot_layout, unsigned int id){
+
+    if (ImPlot::BeginSubplots(plots[0].title.c_str(), plot_layout.rows, plot_layout.cols, ImVec2(ImGui::GetWindowSize().x - 50, ImGui::GetWindowSize().y - 50), 
+        ImPlotSubplotFlags_None)) {    
         
-        ImPlot::PlotLine("V",times,p,(int)S);
+        int colors_size = colors.size();
+        for (int i = 0; i < plot_layout.rows*plot_layout.cols; ++i) {    
+
+            int index = id + i;
+            if (index == plots[0].num_of_cols)
+                break;
+
+            const char *label = plots[0].labels[index].c_str();
+
+            if(ImPlot::BeginPlot(label)){
+
+                ImPlot::SetupAxes(plots[0].xlabel.c_str(), plots[0].ylabel.c_str(),ImPlotAxisFlags_AutoFit,ImPlotAxisFlags_AutoFit);
+
+                for (int k = 0; k < plots.size(); k++){      
+                   
+                    ImPlot::SetNextLineStyle(colors[k%colors_size]);
+                    ImPlot::PlotLine((plots[k].labels[index]+to_string(k)).c_str(),plots[k].time_data.data(),plots[k].data[index].data(),plots[k].num_of_lines);
+                }
+                                
+                ImPlot::EndPlot();                
+            }            
+        }
+
+        ImPlot::EndSubplots();
+    }
+}
+
+void plotAll(PlotInfo plot){
+
+    if(ImPlot::BeginPlot(plot.title.c_str(),ImVec2(ImGui::GetWindowSize().x - 50, ImGui::GetWindowSize().y - 50))){
+
+        ImPlot::SetupAxes(plot.xlabel.c_str(), plot.ylabel.c_str(),ImPlotAxisFlags_AutoFit,ImPlotAxisFlags_AutoFit); 
+
+        int color_index = 0, colors_size = colors.size();
+        for (size_t i = 0; i < plot.data.size(); i++){
+
+            ImPlot::SetNextLineStyle(colors[color_index%colors_size]);
+            color_index++;
+            ImPlot::PlotLine(plot.labels[i].c_str(),plot.time_data.data(),plot.data[i].data(),plot.num_of_lines);
+        }
         ImPlot::EndPlot();
-    }   
+    }
 }
-
-void PrintTheCSV(vector<vector<double>> data){
-   
-    // for (int i = 0; i < (int)data.size(); i++){
-    //         cout << data.at(i)<<data.at(j) << " ";
-    //     cout << endl;
-    // }
-}
-
-// for (int i = 0; i < (int)array.size(); i++){
-//         for (int j = 0; j < (int)array.at(i).size(); j++)
-
-
-// void plot(std::vector<double> times, int id, std::string vname, std::string fname){
-//     std::vector<std::string> colors = {"Green","Purple", "IndianRed", "Aqua", "Aquamarine", "Azure", "Beige", "Bisque", "Black", "BlanchedAlmond", "Blue"};    
-//     std::vector<std::vector<double>> data = readCSV_to_MultidimensionalArray(fname, false);
-//     std::vector<double> col;
-//     for (auto& row: data){    
-//         col.push_back(row.at(id));    
-//     }
-//     assert(times.size() == col.size());
-       
-//     plt::figure_size(1200, 780);
-//     plt::xlabel("days");
-//     plt::plot(times, col, { {"label", vname}, {"color",colors[(id-1)%colors.size()]}, {"linewidth", "2"}});
-//     plt::legend();
-   
-//     stringstream ss;
-//     ss << "figs/" << vname << "_plot.png";
-//     plt::save(ss.str());
-//     ss.str("");
-// }
