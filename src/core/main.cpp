@@ -3,10 +3,16 @@
 ----------------------------------------------------------------------------- */
 
 // clang-format off
+#include <cstdio>
+<<<<<<< HEAD
+#include <limits>
+=======
+>>>>>>> 40e1569e6eea3a2bbbf4c62fd5086e008ac2209f
 #define IMGUI_DEFINE_MATH_OPERATORS
 #include <imgui_internal.h>
 #include <imgui.h>
 #include <imnodes.h>
+#include <implot.h>
 #include <imgui_impl_glfw.h>
 #include <imgui_impl_opengl3.h>
 #include <GLFW/glfw3.h>
@@ -18,19 +24,25 @@
 #include <iostream>
 #include <map>
 #include <string>
+#include <sstream>
 #include <vector>
 #define ODEIR_DEFINITION
 #include <odeir.hpp>
 #undef ODEIR_DEFINITION
 
-#include "../nodes/combinator.hpp"
-#include "../nodes/node.hpp"
-#include "../nodes/population.hpp"
+<<<<<<< HEAD
+#include "../menu/menu.hpp"
+#include "../plot/plot.hpp"
+#include "../pins/pin.hpp"
+
+=======
+#include "src/plot/plot.hpp"
+
+#include "../menu/menu.hpp"
 
 #include "../pins/pin.hpp"
 
-static bool isContextMenuOpen = false;
-
+>>>>>>> 40e1569e6eea3a2bbbf4c62fd5086e008ac2209f
 /* -----------------------------------------------------------------------------
     FUNCTIONS
 ----------------------------------------------------------------------------- */
@@ -41,154 +53,290 @@ void minimapHoverCallback(int nodeId, void *userData) {
 }
 
 void serialize() {
+<<<<<<< HEAD
 
     Model model = ModelBuilder<InitialState>().setMetadata(0, 0, 0);
 
     for (auto &[id, node] : Node::allNodes)
         model = node->serializeInto(model);
 
+    // Pegar esse serialize em vez de mostrar no terminal, abrir e salvar em um
+    // arquivo.
     std::cout << model.toJson() << std::endl;
 }
 
 // Context Menu --------------------------------------------
 
-using NodeFactory = Node *(*)(char *);
-
-#define NODE_ENTRY(name)          \
-    {                             \
-#name, createNode < name> \
-    }
-const int MAX_NODE_NAME_LENGTH = 50;
-
-template <typename T>
-Node *createNode(char *name) {
-    return new T(name); // NOLINT(cppcoreguidelines-owning-memory)
-}
-
-static std::map<std::string, NodeFactory> nodeFactories = {
-    NODE_ENTRY(Population),
-    NODE_ENTRY(Combinator),
-};
-
-static NodeFactory *currentFactory         = nullptr;
-static std::string currentNodeName         = "";
-static char nodeName[MAX_NODE_NAME_LENGTH] = "";
-
-void resetContextMenuState() {
-    currentFactory = nullptr;
-    nodeName[0]    = '\0';
-}
-
-void openContextMenu() {
-    isContextMenuOpen = true;
-    resetContextMenuState();
-}
-
-void renderContextMenu() {
-    if (ImGui::BeginPopupContextItem("Create Node")) {
-
-        if (currentFactory) {
-            ImGui::Text("New %s", currentNodeName.c_str());
-            if (ImGui::InputText(
-                    "##nodename", nodeName, MAX_NODE_NAME_LENGTH,
-                    ImGuiInputTextFlags_EnterReturnsTrue
-                )
-                || ImGui::Button("Create"))
-            {
-                (*currentFactory)(nodeName);
-                isContextMenuOpen = false;
-                resetContextMenuState();
-                ImGui::CloseCurrentPopup();
+void plotGraphs(){
+    int tabToBeRemoved = -1;
+    for (std::size_t n = 0; n < plot_layout.active_tabs.size(); n++){
+        bool open = true;
+        char name[16];
+        snprintf(name, IM_ARRAYSIZE(name), "Tab_%d", plot_layout.active_tabs[n]);
+        if (ImGui::BeginTabItem(name, &(open))){
+            int base_id = (plot_layout.active_tabs[n])*(plot_layout.rows*plot_layout.cols);
+            if (plots.size() == 1){
+                if (plot_all)
+                    plotAll(plots[0]);
+                else 
+                    plot(plots[0], plot_layout, base_id);
             }
+            else if (plots.size() > 1) {
+                plotDifferentScenarios(plots,plot_layout, base_id);
+            }                
+            ImGui::EndTabItem();
         }
-
-        else
-            for (auto &[nodeName, nodeFactory] : nodeFactories)
-                if (ImGui::Selectable(nodeName.c_str())) {
-                    currentFactory    = &nodeFactory;
-                    currentNodeName   = nodeName;
-                    isContextMenuOpen = true;
-                }
-
-        ImGui::EndPopup();
+        if (!open) {
+            tabToBeRemoved = n;
+        }
     }
 
-    if (isContextMenuOpen)
-        ImGui::OpenPopup("Create Node");
+    if (tabToBeRemoved != -1){
+        plot_layout.active_tabs.erase(plot_layout.active_tabs.Data + tabToBeRemoved);                        
+    }
 }
+
 
 void process() {
 
-    // Rendering -------------------------------------------
+    // Rendering -------------------------------------------------------------
+
+    ImGui::PushStyleColor(ImGuiCol_WindowBg, IM_COL32(40, 40, 50, 200));
+    ImGui::Begin("Modeling and Simulation Software");
+
+    if (ImGui::Shortcut(ImGuiMod_Ctrl | ImGuiKey_O)) {
+
+        menuOpenfile();
+    }
+
+    if (ImGui::BeginMainMenuBar()) {
+
+        if (ImGui::BeginMenu("File")) {
+            menuBarFile();
+            ImGui::EndMenu();
+        }
+
+        if (ImGui::BeginMenu("Simulation")) {
+            menuBarEdit();
+            ImGui::EndMenu();
+        }
+
+        ImGui::EndMainMenuBar();
+    }
+
+    if (ImGui::Shortcut(ImGuiMod_Ctrl | ImGuiKey_S)) {
+
+        serialize();
+    }
+
+    static ImGuiTabBarFlags tab_bar_flags = ImGuiTabBarFlags_AutoSelectNewTabs | ImGuiTabBarFlags_Reorderable | ImGuiTabBarFlags_FittingPolicyResizeDown 
+        | ImGuiTabBarFlags_TabListPopupButton;
+    tab_bar_flags &= ~(ImGuiTabBarFlags_FittingPolicyMask_ ^ ImGuiTabBarFlags_FittingPolicyResizeDown);
+    tab_bar_flags &= ~(ImGuiTabBarFlags_FittingPolicyMask_ ^ ImGuiTabBarFlags_FittingPolicyScroll);
+
+    //ImGuiTabBarFlags tab_bar_flags = ImGuiTabBarFlags_TabListPopupButton;
+    if (ImGui::BeginTabBar("Tab bar", tab_bar_flags)) {
+
+        if (ImGui::BeginTabItem("Model")){
+
+            renderContextMenu();
+            
+            ImNodes::BeginNodeEditor();
+
+            if (ImNodes::IsEditorHovered()) {
+                if (!isContextMenuOpen
+                    && ImGui::IsMouseClicked(ImGuiMouseButton_Right))
+                    openContextMenu();                
+            }
+            else
+                isContextMenuOpen = false;
+
+            // Node Handling ---------------------------------------
+
+            for (auto &[id, node] : Node::allNodes)
+                node->process();
+
+            // Link Drawing ----------------------------------------
+
+            for (auto &[srcId, srcPin] : Pin::allPins)
+                srcPin->renderLinks();
+
+            ImNodes::MiniMap(
+                .2f, ImNodesMiniMapLocation_BottomRight, minimapHoverCallback,
+                nullptr
+            );
+
+            float mouseWheel = ImGui::GetIO().MouseWheel;
+
+            if (mouseWheel != 0.0f && ImNodes::IsEditorHovered())
+                ImNodes::EditorContextSmoothZoom(
+                    ImNodes::EditorContextGetZoom() + mouseWheel * .5f,
+                    ImGui::GetMousePos()
+                );
+
+            ImNodes::EndNodeEditor();
+
+            // Link Processing --------------------------------------
+
+            int srcId, dstId;
+            if (ImNodes::IsLinkCreated(&srcId, &dstId))
+                Pin::linkTogether(srcId, dstId);
+
+            int linkId;
+            if (ImNodes::IsLinkHovered(&linkId) && ImGui::IsMouseClicked(0))
+                Pin::unlink(linkId);
+            
+            ImGui::EndTabItem();
+        }        
+
+        //test timer
+        if (flag_simulation && !plot_all){
+            if (ode != nullptr && ode->t <= ode->tf){
+                ode->advanceStep();                 
+                for (int i = 0; i < plots[0].num_of_cols; i++)
+                    plots[0].data[i].push_back(ode->u[i]);
+                
+                plots[0].num_of_lines++;
+                ode->save();
+                plotGraphs();
+                ode->t += ode->dt;
+                if (ode->t > ode->tf) {
+                    flag_simulation = false;
+                    ode->finishSimulation();
+                    ode = nullptr;
+                }
+            }
+        }
+        else {
+            plotGraphs();
+        }
+                
+=======
+
+    Model model = ModelBuilder<InitialState>().setMetadata(0, 0, 0);
+
+    for (auto &[id, node] : Node::allNodes)
+        model = node->serializeInto(model);
+
+    // Pegar esse serialize em vez de mostrar no terminal, abrir e salvar em um
+    // arquivo.
+    std::cout << model.toJson() << std::endl;
+}
+
+// Context Menu --------------------------------------------
+
+void process() {
+
+    // Rendering -------------------------------------------------------------
 
     ImGui::PushStyleColor(ImGuiCol_WindowBg, IM_COL32(40, 40, 50, 200));
     ImGui::Begin("simple node editor");
 
-    renderContextMenu();
+    if (ImGui::Shortcut(ImGuiMod_Ctrl | ImGuiKey_O)) {
+
+        menuOpenfile();
+    }
+
+    if (ImGui::BeginMainMenuBar()) {
+
+        if (ImGui::BeginMenu("File")) {
+            menuBarFile();
+            ImGui::EndMenu();
+        }
+
+        if (ImGui::BeginMenu("Edit")) {
+            menuBarEdit();
+            ImGui::EndMenu();
+        }
+
+        ImGui::EndMainMenuBar();
+    }
 
     if (ImGui::Shortcut(ImGuiMod_Ctrl | ImGuiKey_S)) {
+
         std::cout << "Ctrl S apertado!" << std::endl;
+
         serialize();
     }
 
-    ImNodes::BeginNodeEditor();
+    ImGuiTabBarFlags tab_bar_flags = ImGuiTabBarFlags_TabListPopupButton;
+    if (ImGui::BeginTabBar("Teste", tab_bar_flags)) {
 
-    if (ImNodes::IsEditorHovered()) {
-        if (!isContextMenuOpen && ImGui::IsMouseClicked(ImGuiMouseButton_Right))
-            openContextMenu();
+        if (ImGui::BeginTabItem("Model")) {
+
+            renderContextMenu();
+
+            ImNodes::BeginNodeEditor();
+
+            if (ImNodes::IsEditorHovered()) {
+                if (!isContextMenuOpen
+                    && ImGui::IsMouseClicked(ImGuiMouseButton_Right))
+                    openContextMenu();
+            }
+            else
+                isContextMenuOpen = false;
+
+            // Node Handling ---------------------------------------
+
+            for (auto &[id, node] : Node::allNodes)
+                node->process();
+
+            // Link Drawing ----------------------------------------
+
+            for (auto &[srcId, srcPin] : Pin::allPins)
+                srcPin->renderLinks();
+
+            ImNodes::MiniMap(
+                .2f, ImNodesMiniMapLocation_BottomRight, minimapHoverCallback,
+                nullptr
+            );
+
+            float mouseWheel = ImGui::GetIO().MouseWheel;
+
+            if (mouseWheel != 0.0f && ImNodes::IsEditorHovered())
+                ImNodes::EditorContextSmoothZoom(
+                    ImNodes::EditorContextGetZoom() + mouseWheel * .5f,
+                    ImGui::GetMousePos()
+                );
+
+            ImNodes::EndNodeEditor();
+
+            // Link Processing --------------------------------------
+
+            int srcId, dstId;
+            if (ImNodes::IsLinkCreated(&srcId, &dstId))
+                Pin::linkTogether(srcId, dstId);
+
+            int linkId;
+            if (ImNodes::IsLinkHovered(&linkId) && ImGui::IsMouseClicked(0))
+                Pin::unlink(linkId);
+
+            ImGui::EndTabItem();
+        }
+        if (ImGui::BeginTabItem("Plot", &open_plot)) {
+
+            std::cout << "Opa" << plot_data.size() << std::endl;
+            plot(plot_data, "Plot", "x", "y");
+            ImGui::EndTabItem();
+        }
+
+>>>>>>> 40e1569e6eea3a2bbbf4c62fd5086e008ac2209f
+        ImGui::EndTabBar();
     }
-    else
-        isContextMenuOpen = false;
-
-    // Node Handling ---------------------------------------
-
-    for (auto &[id, node] : Node::allNodes)
-        node->process();
-
-    // Link Drawing ----------------------------------------
-
-    for (auto &[srcId, srcPin] : Pin::allPins)
-        srcPin->renderLinks();
-
-    ImNodes::MiniMap(
-        .2f, ImNodesMiniMapLocation_BottomRight, minimapHoverCallback, nullptr
-    );
-
-    float mouseWheel = ImGui::GetIO().MouseWheel;
-
-    if (mouseWheel != 0.0f && ImNodes::IsEditorHovered())
-        ImNodes::EditorContextSmoothZoom(
-            ImNodes::EditorContextGetZoom() + mouseWheel * .5f,
-            ImGui::GetMousePos()
-        );
-
-    ImNodes::EndNodeEditor();
-    ImGui::End();
-
     ImGui::PopStyleColor();
-
-    // Link Processing --------------------------------------
-
-    int srcId, dstId;
-    if (ImNodes::IsLinkCreated(&srcId, &dstId))
-        Pin::linkTogether(srcId, dstId);
-
-    int linkId;
-    if (ImNodes::IsLinkHovered(&linkId) && ImGui::IsMouseClicked(0))
-        Pin::unlink(linkId);
+    ImGui::End();
 }
 
 /* -----------------------------------------------------------------------------
     MAIN CODE
 ----------------------------------------------------------------------------- */
-
 int main() {
 
     // GLFW Setup ------------------------------------------
     glfwInit();
     glfwWindowHint(GLFW_SAMPLES, 4); // AA
 
-    auto window = glfwCreateWindow(800, 600, "Hello World", NULL, NULL);
+    auto window = glfwCreateWindow(1280, 720, "Hello World", NULL, NULL);
 
     glfwMakeContextCurrent(window);
     glfwSwapInterval(1); // Vsync
@@ -211,23 +359,19 @@ int main() {
 
     setEelStyle(ImGui::GetStyle());
     ImNodes::CreateContext();
+    ImPlot::CreateContext();
 
     ImGui_ImplGlfw_InitForOpenGL(window, true);
     ImGui_ImplOpenGL3_Init("#version 330");
 
     // Application Setup -----------------------------------
 
-    // clang-format off
-    new Population("A");  // NOLINT(clang-diagnostic-writable-strings, clang-analyzer-cplusplus.NewDeleteLeaks)
-    new Population("B");  // NOLINT(clang-diagnostic-writable-strings, clang-analyzer-cplusplus.NewDeleteLeaks)
-    new Population("C");  // NOLINT(clang-diagnostic-writable-strings, clang-analyzer-cplusplus.NewDeleteLeaks)
 
-    new Combinator("ab");  // NOLINT(clang-diagnostic-writable-strings, clang-analyzer-cplusplus.NewDeleteLeaks)
-    new Combinator("abc");  // NOLINT(clang-diagnostic-writable-strings, clang-analyzer-cplusplus.NewDeleteLeaks)
-    // clang-format on
+    ImPlot::CreateContext();
 
     // Main Loop -------------------------------------------
     while (!glfwWindowShouldClose(window)) {
+
         glClear(GL_COLOR_BUFFER_BIT);
         ImGui_ImplOpenGL3_NewFrame();
         ImGui_ImplGlfw_NewFrame();
@@ -235,10 +379,16 @@ int main() {
 
         // Draw Start ---------------------------------------
 
+<<<<<<< HEAD
+=======
         ImGui::ShowDemoWindow();
+        ImPlot::ShowDemoWindow();
+
+>>>>>>> 40e1569e6eea3a2bbbf4c62fd5086e008ac2209f
         ImGuiID dock_id
             = ImGui::DockSpaceOverViewport(ImGui::GetMainViewport(), 0);
         ImGui::SetNextWindowDockID(dock_id, true);
+        ImGui::ShowDemoWindow();
         process();
 
         // Draw End -----------------------------------------
@@ -255,6 +405,7 @@ int main() {
 
     ImGui_ImplOpenGL3_Shutdown();
     ImGui_ImplGlfw_Shutdown();
+    ImPlot::DestroyContext();
     ImNodes::DestroyContext();
     ImGui::DestroyContext();
 

@@ -104,9 +104,19 @@ void Combinator::onPinUnlinked(Pin *thisPin, Node *otherNode) {
 
 Model Combinator::serializeInto(Model model) {
 
+<<<<<<< HEAD
+    auto combState = model
+        .buildNode(id, name)
+        .withOperation(options[selected][0]);
+
+    // TODO: Links
+    return combState;
+    
+=======
     auto combState
         = model.buildNode(id, name).withOperation(options[selected][0]);
 
     // TODO: Links
     return combState;
+>>>>>>> 40e1569e6eea3a2bbbf4c62fd5086e008ac2209f
 }
