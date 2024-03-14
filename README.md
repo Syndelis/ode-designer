@@ -1,5 +1,8 @@
 # ODE Designer
 
+> [!IMPORTANT]
+> Este projeto foi substituído pela re-implemantação da interface gráfica em Rust, neste repositório: https://github.com/Syndelis/ode-designer-rs/
+
 ## Contribuindo com o projeto
 
 Siga os passos abaixo para conseguir clonar, buildar e desenvolver no projeto.
